@@ -2,7 +2,6 @@
 ob_start();
 error_reporting(E_ERROR | E_ALL );
 //~ require_once('session.php');
-require_once('connect.php');
 require_once('router.php');
 require_once('title.php');
 require_once('crud_functions.php');
