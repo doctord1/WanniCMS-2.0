@@ -101,9 +101,6 @@ function render_page_bottom(){
   echo ' </body></html>';
 }
 
-function show_landing_page(){
-   
-}
 
 function show_default_home_page(){
   echo '<h1>Welcome to WanniCMS homepage</h1>';
