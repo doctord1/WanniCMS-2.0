@@ -79,18 +79,18 @@ function load_system(){
 }load_system();	
 
 function load_stylesheets(){
-  $styles_dir = dirname(dirname(__FILE__)).'/'.'styles/';
+   $styles_dir = dirname(dirname(__FILE__)).'/'.'styles/';
     foreach (glob($styles_dir.'*.css') as $stylesheet){
     $stylesheet = str_ireplace($styles_dir,'',$stylesheet);
       echo '<link href="'.BASE_PATH.'/styles/'.$stylesheet.'" rel="stylesheet" type="text/css">';
     }
   }
 function load_scripts(){
+   load_jquery();
   $scripts_dir = dirname(dirname(__FILE__)).'/'.'scripts/';
-    foreach (glob($scripts_dir.'*js') as $script){
-      echo $script;
-    $this_script = str_ireplace($scripts_dir,'',$script);
-      echo '<script src="'.BASE_PATH.'/scripts/'.$this_script.'">';
+    foreach (glob($scripts_dir.'*.js') as $script){
+      $this_script = str_ireplace($scripts_dir,'',$script);
+      echo '<script src="'.BASE_PATH.'/scripts/'.$this_script.'"></script>';
     }
   }
 
@@ -562,10 +562,11 @@ function do_top_right_sidebar(){
 
 	
 function load_bootstrap(){
-	//~ echo '<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
-//~ <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js" integrity="sha384-vFJXuSJphROIrBnz7yo7oB41mKfc8JzQZiCq4NCceLEaO4IHwicKwpJf9c9IpFgh" crossorigin="anonymous"></script>
+   // load_jquery();
+	 //~ echo '<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    //~ <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js" integrity="sha384-vFJXuSJphROIrBnz7yo7oB41mKfc8JzQZiCq4NCceLEaO4IHwicKwpJf9c9IpFgh" crossorigin="anonymous"></script>
   //~ echo '<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js" integrity="sha384-alpBpkh1PFOepccYVYDB4do5UnbKysX5WZXm3XxPqe5iKTfUKjNkCk9SaVuEZflJ" crossorigin="anonymous"></script>';
-	echo '<script src="'.BASE_PATH .'libraries/bootstrap/js/bootstrap.min.js"></script>';
+	 echo '<script src="'.BASE_PATH .'libraries/bootstrap/js/bootstrap.min.js"></script>';
 	}
 	
 function load_jquery(){
@@ -576,7 +577,11 @@ function load_jquery(){
 function load_prettyPhoto(){
 	
 	}
+function load_bootstrap_css()
+{
+  echo '<link rel="stylesheet" href="'.BASE_PATH.'libraries/bootstrap/css/bootstrap.min.css">';
   
+}  
 
 function do_footer(){
 	unset($_SESSION['status_message']);

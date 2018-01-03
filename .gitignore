@@ -1,0 +1,13 @@
+# Ignore
+libraries/
+.goutputstream*
+~*
+
+# Allow
+!*.css
+!*.php
+!*.js
+!*.vue
+!*.css
+!*.txt
+!*.htaccess

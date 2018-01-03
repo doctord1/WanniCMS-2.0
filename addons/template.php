@@ -25,7 +25,8 @@ function start_page(){
     echo "<link href='https://fonts.googleapis.com/css?family=Kaushan+Script' rel='stylesheet' type='text/css'>
     <link href='https://fonts.googleapis.com/css?family=Droid+Serif:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
     <link href='https://fonts.googleapis.com/css?family=Roboto+Slab:400,100,300,700' rel='stylesheet' type='text/css'>";
-
+    
+    load_bootstrap_css();
     load_stylesheets();
     
     echo '
@@ -86,21 +87,54 @@ function show_brand_and_menus(){
 }
 
 function render_page_top(){
-  echo '<body id="page-top" class="content-pushed">';
+  echo '<body id="page-top" class="">';
+ 
+  
+  echo '<div class="container-fluid">
+                <div class="row" style="background:#fff;">
+                     <img class="logo"  src="images/logo.png"/>
+                     <p class="slogan">We Speak and Motivate</p>
+                </div>';
+                
   show_brand_and_menus();
-  echo '<div class="container p-0">';
-  //~ echo '<div class="col-md-6 col-xs-12 inline-block mx-auto mb-2 p-2 well text-center"> Ad slot 1';
-  echo '</div>';
-  
-  //~ echo '<div class="col-md-6 col-xs-hiddden inline-block mx-auto mb-2 p-2 well text-center"> Ad slot 2';
-  echo '</div>';
+                
 }
-  
+ 
 function render_page_bottom(){
-  echo '</div>';
-  if(!isset($_GET['go-embed-mode'])){
-    echo '<section class="footer-region">'; do_footer(); echo '</section>';
-  }
+  echo '  <div class="container">
+                <div class="row">
+                    <div class="col-md-6">
+                       <div class="card"></div>
+                    </div>
+                    
+                    <div class="col-md-6">
+                       <div class="card"></div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="card col-md-6">
+                       
+                    </div>
+                    
+                    <div class="card col-md-6">
+                        
+                    </div>
+                </div>
+              
+              </div>
+              <div class="row">
+                <div class="footer" style="background:rgb(10,10,255);">
+                     <p>Design By DdreLux &COPY; <b>2017</b></p>
+                </div>
+             </div>
+        
+        </div>
+        ';
+  
+  //if(!isset($_GET['go-embed-mode'])){
+
+   // echo '<section class="footer-region">'; do_footer(); echo '</section>';
+  //}
   echo ' </body></html>';
 }
 
