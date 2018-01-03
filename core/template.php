@@ -88,53 +88,15 @@ function show_brand_and_menus(){
 
 function render_page_top(){
   echo '<body id="page-top" class="">';
- 
-  
-  echo '<div class="container-fluid">
-                <div class="row" style="background:#fff;">
-                     <img class="logo"  src="images/logo.png"/>
-                     <p class="slogan">We Speak and Motivate</p>
-                </div>';
-                
   show_brand_and_menus();
-                
 }
  
 function render_page_bottom(){
-  echo '  <div class="container">
-                <div class="row">
-                    <div class="col-md-6">
-                       <div class="card"></div>
-                    </div>
-                    
-                    <div class="col-md-6">
-                       <div class="card"></div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="card col-md-6">
-                       
-                    </div>
-                    
-                    <div class="card col-md-6">
-                        
-                    </div>
-                </div>
-              
-              </div>
-              <div class="row">
-                <div class="footer" style="background:rgb(10,10,255);">
-                     <p>Design By DdreLux &COPY; <b>2017</b></p>
-                </div>
-             </div>
-        
-        </div>
-        ';
   
-  //if(!isset($_GET['go-embed-mode'])){
+  if(!isset($_GET['go-embed-mode'])){
 
-   // echo '<section class="footer-region">'; do_footer(); echo '</section>';
-  //}
+    echo '<section class="footer-region">'; do_footer(); echo '</section>';
+  }
   echo ' </body></html>';
 }
 
@@ -225,16 +187,6 @@ function get_default_template(){
   echo $template;
 }
 
-function get_custom_template(){
-  //~ $template = '';
-  //~ $template .= start_page(); // LOADS all stylesheets in styles folder and beginning html
-  //~ $template .= render_page_top();// renders content above the main content
-  //~ $template .= '<div class="col-md-12 col-xs-12">';
-  //~ $template .= get_url_content(); //VERY IMPORTANT!!
-  //~ $template .= '</div>';
-  //~ $template .= render_page_bottom(); // RENDERS footer and loads all scripts in scripts folder like bootstap etc
-  //~ return $template;
-}
   
 function render_template(){
   $template = get_custom_template();

@@ -1,9 +1,9 @@
 <?php
 require_once ('core.php');
-$user = "wanni";
+$user = "root";
 $server = "localhost";
-$pass = "wanni";
-$db = "wannivue";
+$pass = "";
+$db = "wannicms";
 
 
 //1. Create a database connection
@@ -52,7 +52,7 @@ define('WELCOME_MESSAGE', $welcome_message);
 
 
 # SETS BASE PATH
-$base_path = 'http://localhost/aplussite.com/';
+$base_path = 'http://localhost/WanniCMS-2.0/';
 
 // SETS SITE VERSION
 $site_version = '0.0.1';
