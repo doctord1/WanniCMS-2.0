@@ -1,8 +1,8 @@
 <?php
 require_once ('core.php');
-$user = "root";
+$user = "wanni";
 $server = "localhost";
-$pass = "";
+$pass = "wanni";
 $db = "wannivue";
 
 
@@ -52,7 +52,7 @@ define('WELCOME_MESSAGE', $welcome_message);
 
 
 # SETS BASE PATH
-$base_path = 'http://localhost/wanni-vue/';
+$base_path = 'http://localhost/aplussite.com/';
 
 // SETS SITE VERSION
 $site_version = '0.0.1';

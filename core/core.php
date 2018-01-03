@@ -2,6 +2,7 @@
 ob_start();
 error_reporting(E_ERROR | E_ALL );
 //~ require_once('session.php');
+
 require_once('router.php');
 require_once('title.php');
 require_once('crud_functions.php');
@@ -86,9 +87,10 @@ function load_stylesheets(){
   }
 function load_scripts(){
   $scripts_dir = dirname(dirname(__FILE__)).'/'.'scripts/';
-    foreach (glob($scripts_dir.'*.js') as $script){
-    $stylesheet = str_ireplace($scripts_dir,'',$script);
-      echo '<script src="'.BASE_PATH.'/scripts/'.$script.'">';
+    foreach (glob($scripts_dir.'*js') as $script){
+      echo $script;
+    $this_script = str_ireplace($scripts_dir,'',$script);
+      echo '<script src="'.BASE_PATH.'/scripts/'.$this_script.'">';
     }
   }
 
@@ -468,94 +470,94 @@ function do_header() {
 	//~ show_logo(); # Displays logo	
 	if(is_logged_in()){
 		show_welcome_message(); 
-		$output = get_region_blocks('header');
-		if($output !== ''){
-			echo $output;
-			}
+	//	$output = get_region_blocks('header');
+	//	if($output !== ''){
+	//		echo $output;
+	//		}
 	}
 }
 
 
 
 function do_highlight() {
-	if(is_logged_in()){	
-	$output = get_region_blocks('highlight');
-	if($output !== ''){
-		echo $output;
-		}
-	}
+//	if(is_logged_in()){	
+//	$output = get_region_blocks('highlight');
+//	if($output !== ''){
+//		echo $output;
+//		}
+//	}
 }
 
 
 function do_three_column_region(){
-	$column1 = get_region_blocks('3_column_column_1','three-column-title','three-column-even');
-	$column2 = get_region_blocks('3_column_column_2','three-column-title','three-column-even');
-	$column3 = get_region_blocks('3_column_column_3','three-column-title','three-column-even');
+//	$column1 = get_region_blocks('3_column_column_1','three-column-title','three-column-even');
+//	$column2 = get_region_blocks('3_column_column_2','three-column-title','three-column-even');
+//	$column3 = get_region_blocks('3_column_column_3','three-column-title','three-column-even');
 
 	$region = '';
-	if($column1 !== ''){ $region = $region .'<div class="floating-container">'. $column1 .'</div>'; }
-	if($column2 !== ''){ $region = $region .'<div class="floating-container">'. $column2 .'</div>';  }
-	if($column3 !== ''){ $region = $region .'<div class="floating-container">'. $column3 .'</div>'; }
+//	if($column1 !== ''){ $region = $region .'<div class="floating-container">'. $column1 .'</div>'; }
+//	if($column2 !== ''){ $region = $region .'<div class="floating-container">'. $column2 .'</div>';  }
+//	if($column3 !== ''){ $region = $region .'<div class="floating-container">'. $column3 .'</div>'; }
 	
-	if($region !== ''){ echo $region;}
+//	if($region !== ''){ echo $region;}
 	
 	}
 
 function do_main_content(){
-	if(is_logged_in()){
-		$output = get_region_blocks('main content');
-		if($output !== ''){
-			echo $output;
-			}
-	}
+	//if(is_logged_in()){
+	//	$output = get_region_blocks('main content');
+	//	if($output !== ''){
+	//		echo $output;
+	//		}
+	//}
 }
 
 function do_ads(){
-	$output = get_region_blocks('ads');
-	if($output !== ''){
-		echo $output ;
-		}		
+	//$output = get_region_blocks('ads');
+	//if($output !== ''){
+	//	echo $output ;
+	//	}		
 }
 
 function do_left_sidebar(){
-	if(is_logged_in()){
+//	if(is_logged_in()){
   echo '<div class="sweet_title">Menus</div>';
-  echo '<div class="padding-10">';
-  get_top_menu_items();
+ // echo '<div class="padding-10">';
+  //get_top_menu_items();
   echo '</div>';
-	$output = get_region_blocks('left sidebar');
-	if($output !== ''){
-		echo $output;
-		}
+//	$output = get_region_blocks('left sidebar');
+//	if($output !== ''){
+//		echo $output;
+//		}
   
-	}
+//	}
   
 }
 
 
 function do_right_sidebar(){
-	if(is_logged_in()){
-	$output = get_region_blocks('right sidebar');
-	if($output !== ''){
-		echo $output;
-		}
-	if($_GET['page_name'] !=='home' && !url_contains('user')){
-		}
-		echo '</div>';
-	}
+//	if(is_logged_in()){
+//	$output = get_region_blocks('right sidebar');
+//	if($output !== ''){
+	//	echo $output;
+	//	}
+//	if($_GET['page_name'] !=='home' && !url_contains('user')){
+//		}
+//		echo '</div>';
+//	}
 }
 
 
 function do_top_right_sidebar(){
 	
-	$output = get_region_blocks('top right sidebar');
-	if($output !== ''){
-		echo $output;
-		}
-	if($_GET['page_name'] !=='home' && !url_contains('user')){
+	//$output = get_region_blocks('top right sidebar');
+//	if($output !== ''){
+//		echo $output;
+	//	}
+//	if($_GET['page_name'] !=='home' && !url_contains('user')){
 		
-		}
-		echo '</div>';
+//		}
+//		echo '</div>';
 }
 
 	
@@ -581,8 +583,8 @@ function do_footer(){
   
   echo '<p align="center">&copy; '.date('Y').' '.APPLICATION_NAME.' - All rights reserved. </p>';
 	 
-	$output = get_region_blocks('footer');
-	if($output !== ''){ echo $output; }
+	//$output = get_region_blocks('footer');
+	//if($output !== ''){ echo $output; }
 	//~ add_nicedit_editor();
 		
 	if(url_contains('messaging/?mid')){

@@ -211,6 +211,7 @@ function get_clean_url($url){
   }
 
 function show_route_content(){
+
   if(isset($_GET['clean-url']['addon'])){
     $route = $_GET['clean-url']['addon'];
     $current_path = array_shift($_GET['clean-url']);
@@ -225,8 +226,9 @@ function show_route_content(){
     $params = sanitize($params,',');
     
     //~ echo '<br> Func name is : ' . $func_name;
-    call_user_func($func_name,$params);
-  
+        if(function_exists($func_name)){
+            call_user_func($func_name,$params);
+        }
     }
     //~ $_GET['clean-url'] = $holder;
   }

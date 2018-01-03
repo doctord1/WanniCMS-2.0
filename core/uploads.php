@@ -416,7 +416,7 @@ function remove_file(){
     $file_id= trim(mysql_prep($_GET['delete_pic']));
   }
 
-  if($_GET['delete_pic'] && is_logged_in()){
+  if( isset($_GET['delete_pic']) && is_logged_in()){
 
     $query = query_db("SELECT `id`, `large_path`, `medium_path`, `small_path`, `original_path` FROM `files` WHERE `id`='{$file_id}'",
     "Error fetching filepath! ");

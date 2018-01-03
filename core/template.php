@@ -12,12 +12,15 @@ function start_page(){
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>'.APPLICATION_NAME.' - '.$_SESSION['page_name'].'</title>
+    <title>'.APPLICATION_NAME.' - ';
+     if(isset($_SESSION['page_name'])){
+       echo $_SESSION['page_name'];
+     }
+     echo '</title>
 
     <!-- Bootstrap core CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css" integrity="sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb" crossorigin="anonymous">
     <!-- Custom fonts for this template -->
-    <link href="theme/vendor/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
     <link href="https://fonts.googleapis.com/css?family=Montserrat:400,700" rel="stylesheet" type="text/css">';
     echo "<link href='https://fonts.googleapis.com/css?family=Kaushan+Script' rel='stylesheet' type='text/css'>
     <link href='https://fonts.googleapis.com/css?family=Droid+Serif:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
@@ -135,13 +138,16 @@ function show_left_sidebar(){
   echo '<div class=" main-sidebar main-sidebar-left">';
     echo '<div id="close-sidebar"><p align="center"><br> - Close x </p></div>';
   if(!is_user_page()){
-  $pic = show_user_pic($user=$_SESSION['username'],$pic_class='circle-pic',$length='100px');
-  echo '<div class="padding-20 center-block">'.$pic['picture'].'</div>';
+     if(isset($_SESSION['username'])){
+          $pic = show_user_pic($user=$_SESSION['username'],$pic_class='circle-pic',$length='100px');
+           echo '<div class="padding-20 center-block">'.$pic['picture'].'</div>';
+    }
+
   //~ if(addon_is_active('rewards')){
     //~ display_user_rewards_status();
     //~ }
   }
-
+    
   do_left_sidebar();
 
   //~ if(is_logged_in()){

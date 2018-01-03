@@ -10,7 +10,11 @@ if(!isset($_SESSION['CREATED'])) {
   $_SESSION['CREATED'] = time();  // update creation time
 }
 
-$_SESSION['prev_url'] = $_SERVER['HTTP_REFERER'];
+
+if(isset($_SERVER['HTTP_REFERER'])){
+    $_SESSION['prev_url'] =$_SERVER['HTTP_REFERER'];
+    
+}
 $host = $_SERVER['HTTP_HOST'];
 if($host == 'localhost'){
   $_SESSION['current_url'] = 'http://'.$_SERVER['HTTP_HOST']. $_SERVER['REQUEST_URI'];
@@ -62,7 +66,6 @@ function show_session_message(){
 
 $_SESSION['LAST_ACTIVITY'] = time(); // update last activity time stamp
 $_SESSION['base_path'] = BASE_PATH;
-$_SESSION['dir_path'] = DIR_PATH;
 $_SESSION['temp_container']='';
 
 

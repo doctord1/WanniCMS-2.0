@@ -239,12 +239,13 @@ function greet_user(){
 
 
 function is_user_page(){
-  if($_GET['clean-url']['action'] == 'show-user-profile' || $_GET['clean-url']['addon_path'] == 'user'){
-  return true;
-  }else{
-  return false;
+  if(isset($_GET['clean-url'])){
+    if($_GET['clean-url']['action'] == 'show-user-profile' || $_GET['clean-url']['addon_path'] == 'user'){
+        return true;
+    }else{
+        return false;
+    }
   }
-
 }
 
 function is_logged_in(){
