@@ -51,16 +51,19 @@ function session_message($class='', $string=''){
 
 }
 
+$_SESSION['user_id'] = 2;
 
 function show_session_message(){
-  foreach($_SESSION['nag'] as $nag){
-    echo '<div class="error">'.$nag.'</div>';
+  if(isset($_SESSION['nag'])){
+    foreach($_SESSION['nag'] as $nag){
+      echo '<div class="error">'.$nag.'</div>';
+    }
   }
-  if(isset($_SESSION['status_message'])){
-    $message = $_SESSION['status_message'];
+  if(!empty($_SESSION['status-message'])){
+    $message = $_SESSION['status-message'];
     echo $message;
   }
-  $_SESSION['status_message']='';
+  $_SESSION['status-message']='';
 }
 
 

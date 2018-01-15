@@ -1,4 +1,5 @@
 <?php
+require_once('enable_disable_addon.php');
 //~ Select draw winners
 if(addon_is_active('draws')){
   $time = getdate();

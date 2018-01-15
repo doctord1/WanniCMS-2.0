@@ -17,22 +17,19 @@ function start_page(){
        echo $_SESSION['page_name'];
      }
      echo '</title>
-
-    <!-- Bootstrap core CSS -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css" integrity="sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb" crossorigin="anonymous">
-    <!-- Custom fonts for this template -->
-    <link href="https://fonts.googleapis.com/css?family=Montserrat:400,700" rel="stylesheet" type="text/css">';
+     
+    <!-- Custom fonts for this template -->';
+    echo "<!-- FONTS -->
+    <link href='http://fonts.googleapis.com/css?family=Roboto:400,100,100italic,300,300italic,400italic,500italic,700,500,700italic,900,900italic' rel='stylesheet' type='text/css'>";
+    echo '<link href="https://fonts.googleapis.com/css?family=Montserrat:400,700" rel="stylesheet" type="text/css">';
     echo "<link href='https://fonts.googleapis.com/css?family=Kaushan+Script' rel='stylesheet' type='text/css'>
     <link href='https://fonts.googleapis.com/css?family=Droid+Serif:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
     <link href='https://fonts.googleapis.com/css?family=Roboto+Slab:400,100,300,700' rel='stylesheet' type='text/css'>";
-    
     load_bootstrap_css();
     load_stylesheets();
     
-    echo '
-
-  </head>	';
-	echo '
+  echo '
+  </head>
 	
 	<!-- Mobile Specific Metas
   –––––––––––––––––––––––––––––––––––––––––––––––––– -->
@@ -47,7 +44,7 @@ function start_page(){
   –––––––––––––––––––––––––––––––––––––––––––––––––– -->
 	<link rel="shortcut icon" href="'.BASE_PATH.'uploads/files/default_images/favicon.ico?v=4f32ecc8f43d">
   <link href="https://fonts.googleapis.com/css?family=Varela+Round" rel="stylesheet">
-	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css" integrity="sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb" crossorigin="anonymous">';
+	';
 
   echo '<link href="'.BASE_PATH .'libraries/font-awesome/css/font-awesome.min.css" rel="stylesheet" media="screen">';
 	
@@ -58,45 +55,51 @@ function start_page(){
   ____________________________________________________ -->';
   
 echo "</head>";
-
 	remove_file();
 }
 
-
-function show_brand_and_menus(){
-   $menu = get_nav_bar();
-  if(empty($menu)){
-    $menu = '<div class="row">
-  <header class ="navigation col-md-12 col-xs-12">
-    <nav class="navbar navbar-default" role="navigation">
-    <div class="navbar-header col-md-12 col-xs-12">
-    <div class="row">
-      <div class="col-md-3 col-xs-3">
-        <a class="navbar-brand col-md-3 col-xs-3" href="'.BASE_PATH.'">
-          '.APPLICATION_NAME.'
-        </a>
-      </div> 
-      
-    </div>
-  </div>
-
-  </header>
-  </div>';
+function load_script_file($path){
+  echo '<script src="'.$path.'"></script>';
   }
-  echo $menu;
+
+function load_bootstrap(){
+
+  echo '
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.3/js/bootstrap.min.js" integrity="sha384-a5N7Y/aK3qNeh15eJKGWxsqtnX/wWdSZSKp+81YjTmS15nvnvxKHuzaWwXHDli+4" crossorigin="anonymous"></script>
+  ';
+}
+	
+function load_jquery(){
+   echo '<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js" integrity="sha384-vFJXuSJphROIrBnz7yo7oB41mKfc8JzQZiCq4NCceLEaO4IHwicKwpJf9c9IpFgh" crossorigin="anonymous"></script>';
+	//~ echo '<script src="'.BASE_PATH .'libraries/jquery/jquery-1.11.2.min.js"></script>';
 }
 
+function load_vuejs(){
+  echo '<script type="text/javascript" src="'.BASE_PATH.'libraries/vue.js"></script>';
+}
+	
+function load_prettyPhoto(){
+	
+}
+  
+function load_bootstrap_css(){
+  echo '<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.3/css/bootstrap.min.css" integrity="sha384-Zug+QiDoJOrZ5t4lssLdxGhVrurbmBWopoEl+M6BdEfwnCJZtKxi1KgxUyJq13dy" crossorigin="anonymous">
+  <link rel="stylesheet" href="'.BASE_PATH.'libraries/bootstrap/css/bootstrap.min.css">';  
+} 
+
 function render_page_top(){
-  echo '<body id="page-top" class="">';
-  show_brand_and_menus();
+  load_vuejs();
+  echo '<body class="bg-light">';
+  show_bootstrap_brand_and_menus();
+  show_session_message();
 }
  
 function render_page_bottom(){
-  
   if(!isset($_GET['go-embed-mode'])){
-
-    echo '<section class="footer-region">'; do_footer(); echo '</section>';
+    echo '<section class="clear-fix d-flex justify-content-center relative-bottom flex-wrap bg-dark p-4 text-white">'; do_footer(); echo '</section>';
   }
+  load_bootstrap();
   echo ' </body></html>';
 }
 
@@ -175,25 +178,24 @@ if(isset($_SESSION['user_before_morph'])){
 do_main_content();
 }
 
-function get_default_template(){
+function show_default_template(){
   $template = '';
-  $template .= start_page(); 
-  $template .= show_left_sidebar();
-  $template .= render_page_top();
-  $template .= '<div class="col-md-12 col-xs-12">';
-  $template .= get_url_content();
-  $template .= '</div>';
-  $template .= render_page_bottom();
-  echo $template;
+  start_page(); 
+  show_left_sidebar();
+  render_page_top();
+  echo '<div class="col-md-12 col-xs-12">';
+  get_url_content();
+  echo '</div>';
+  render_page_bottom();
 }
 
   
 function render_template(){
-  $template = get_custom_template();
-  if(empty($template)){
-    $template = get_default_template();
+  if(function_exists('show_custom_template')){
+    show_custom_template();
+  } else {
+    show_default_template();
   }
-  echo $template;
 }
 
 ?>

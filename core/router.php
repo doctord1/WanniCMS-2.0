@@ -49,7 +49,7 @@ function redirect_to($destination){
 }
 
 
-function is_json_request($url){
+function is_json_request(){
   if(empty($url)){
     $url = URL;
   }
@@ -63,7 +63,8 @@ function is_json_request($url){
 
 function get_json_data($url=''){
   #Queris the db and returns json data
-  if(is_json_request()){
+  //~ if(is_json_request($url)){
+    echo 'meaw!';
     if(empty($url)){
       $url = URL;
     }
@@ -94,7 +95,7 @@ function get_json_data($url=''){
     $_GET['get-data']['parameter'] = $url_params[3];
     $_GET['get-data']['pager-start'] = $url_params[4];
     $_GET['get-data']['pager-end'] = $url_params[5];
-    
+    print_r($_GET['get-data']);
     $table = $_GET['get-data']['table'];
     $column = $_GET['get-data']['column'];
     $parameter = $_GET['get-data']['parameter'];
@@ -128,11 +129,11 @@ function get_json_data($url=''){
         $condition = sanitize($condition);
         $sql = "SELECT {$condition} {$limit}";
         $sql = trim($sql);
-        echo $sql;
         $q = query_db("$sql",
         "Could not get condition  data from {$table}! ");
       } else {
-        $q = query_db("SELECT * FROM {$table} WHERE {$condition} {$limit}",
+        $sql = "SELECT * FROM {$table} WHERE {$condition} {$limit}";
+        $q = query_db("{$sql}",
         "Could not get {$column} value from {$table}! ");
       }
       if($q){
@@ -158,14 +159,14 @@ function get_json_data($url=''){
             }
           }
         $obj = json_encode($q);
-        header('Content-Type: application/json');
-        echo $obj;
-        exit;
+        //~ header('Content-Type: application/json');
+        return $obj;
+        //~ exit;
       }  
     }
-  } else {
-    echo 'Not a valid json request!';
-  }
+  //~ } else {
+    //~ echo 'Not a valid json request!';
+  //~ }
 }
 
 function get_url_content($url=''){
@@ -194,40 +195,47 @@ function get_clean_url($url){
   
   $_GET['clean-url']['current_path'] = URL;
   $_GET['clean-url']['addon'] = array_shift($url_params);
+  $action = array_shift($url_params);
+  $_GET['clean-url'][$action] = array_shift($url_params);
+  $_GET['clean-url']['params'] = $url_params;
   
   //~ print_r($url_params);
-  foreach($url_params as $value){
-    if($state_holder == 0 && !empty($value)){
-      $key_name =  array_shift($url_params);
-      $state_holder++;
-    }
-    if($state_holder == 1 && !empty($value)){
-      $_GET['clean-url']["{$key_name}"] =  array_shift($url_params);
-      $key_name = '';
-      $state_holder = 0;
-    }
-  }
+  //~ foreach($url_params as $value){
+    //~ if($state_holder == 0 && !empty($value)){
+      //~ $key_name =  array_shift($url_params);
+      //~ $state_holder++;
+    //~ }
+    //~ if($state_holder == 1 && !empty($value)){
+      //~ $_GET['clean-url']["{$key_name}"] =  array_shift($url_params);
+      //~ $key_name = '';
+      //~ $state_holder = 0;
+    //~ }
+  //~ }
   //~ print_r($_GET['clean-url']);
   }
 
-function show_route_content(){
-
+function show_route_content($url=''){
+  if(empty($url)){
+    $url = URL;
+  }
   if(isset($_GET['clean-url']['addon'])){
     $route = $_GET['clean-url']['addon'];
     $current_path = array_shift($_GET['clean-url']);
     $addon_path = array_shift($_GET['clean-url']);
     $func_name  = array_shift($_GET['clean-url']);
     $func_name = str_ireplace('-','_',$func_name);
-    $params = '';
-    foreach($_GET['clean-url'] as $key => $value){
-      $params .= $value .',';
+    $num_params = count($_GET['clean-url']['params']);
+    $incrementor = 0;
+    foreach($_GET['clean-url']['params'] as $value){
+      if($incrementor <= $num_params){
+        $_GET['clean-url']['params'][$incrementor] = trim(sanitize($value));
+        $incrementor++;
       }
-    $params = trim($params,',');
-    $params = sanitize($params,',');
+    }
     
-    //~ echo '<br> Func name is : ' . $func_name;
+    //~ echo '<br> Func name is : ' . $func_name.'('.$_GET['clean-url']['params'].')';
         if(function_exists($func_name)){
-            call_user_func($func_name,$params);
+          call_user_func_array($func_name,$_GET['clean-url']['params']);
         }
     }
     //~ $_GET['clean-url'] = $holder;

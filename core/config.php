@@ -3,7 +3,7 @@ require_once ('core.php');
 $user = "root";
 $server = "localhost";
 $pass = "";
-$db = "wannicms";
+$db = "roomshare";
 
 
 //1. Create a database connection
@@ -34,7 +34,7 @@ CREATE TABLE IF NOT EXISTS `installed` (
 
 # SETS APPLICATION NAME
 
-$app_name = 'My Application Name';
+$app_name = 'RoomShare';
 
 define('APPLICATION_NAME', $app_name);
 // APPLICATION_NAME is now available as a constant in any page
@@ -52,7 +52,7 @@ define('WELCOME_MESSAGE', $welcome_message);
 
 
 # SETS BASE PATH
-$base_path = 'http://localhost/WanniCMS-2.0/';
+$base_path = 'http://localhost/roomshare/';
 
 // SETS SITE VERSION
 $site_version = '0.0.1';
