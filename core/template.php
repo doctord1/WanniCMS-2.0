@@ -20,16 +20,10 @@ function start_page(){
      
     <!-- Custom fonts for this template -->';
     echo "<!-- FONTS -->
-    <link href='http://fonts.googleapis.com/css?family=Roboto:400,100,100italic,300,300italic,400italic,500italic,700,500,700italic,900,900italic' rel='stylesheet' type='text/css'>";
-    echo '<link href="https://fonts.googleapis.com/css?family=Montserrat:400,700" rel="stylesheet" type="text/css">';
-    echo "<link href='https://fonts.googleapis.com/css?family=Kaushan+Script' rel='stylesheet' type='text/css'>
-    <link href='https://fonts.googleapis.com/css?family=Droid+Serif:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
-    <link href='https://fonts.googleapis.com/css?family=Roboto+Slab:400,100,300,700' rel='stylesheet' type='text/css'>";
-    load_bootstrap_css();
-    load_stylesheets();
+    ";
+   
     
   echo '
-  </head>
 	
 	<!-- Mobile Specific Metas
   –––––––––––––––––––––––––––––––––––––––––––––––––– -->
@@ -47,7 +41,6 @@ function start_page(){
 	';
 
   echo '<link href="'.BASE_PATH .'libraries/font-awesome/css/font-awesome.min.css" rel="stylesheet" media="screen">';
-	
   echo '<!-- Favicon
   –––––––––––––––––––––––––––––––––––––––––––––––––– -->
   <link rel="icon" type="image/png" href="'.BASE_PATH .'uploads/files/default_images/favicon.png">
@@ -55,6 +48,10 @@ function start_page(){
   ____________________________________________________ -->';
   
 echo "</head>";
+  echo "<link href='https://fonts.googleapis.com/css?family=Roboto:100' rel='stylesheet' type='text/css'>";
+  load_bootstrap_css();
+  load_stylesheets();
+  load_jquery();
 	remove_file();
 }
 
@@ -70,22 +67,19 @@ function load_bootstrap(){
 }
 	
 function load_jquery(){
-   echo '<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js" integrity="sha384-vFJXuSJphROIrBnz7yo7oB41mKfc8JzQZiCq4NCceLEaO4IHwicKwpJf9c9IpFgh" crossorigin="anonymous"></script>';
-	//~ echo '<script src="'.BASE_PATH .'libraries/jquery/jquery-1.11.2.min.js"></script>';
+   //~ echo '<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    //~ <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js" integrity="sha384-vFJXuSJphROIrBnz7yo7oB41mKfc8JzQZiCq4NCceLEaO4IHwicKwpJf9c9IpFgh" crossorigin="anonymous"></script>';
+	echo '<script src="'.BASE_PATH .'libraries/jquery/jquery-1.11.2.min.js"></script>';
 }
 
 function load_vuejs(){
   echo '<script type="text/javascript" src="'.BASE_PATH.'libraries/vue.js"></script>';
 }
 	
-function load_prettyPhoto(){
-	
-}
   
 function load_bootstrap_css(){
-  echo '<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.3/css/bootstrap.min.css" integrity="sha384-Zug+QiDoJOrZ5t4lssLdxGhVrurbmBWopoEl+M6BdEfwnCJZtKxi1KgxUyJq13dy" crossorigin="anonymous">
-  <link rel="stylesheet" href="'.BASE_PATH.'libraries/bootstrap/css/bootstrap.min.css">';  
+  //~ echo '<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.3/css/bootstrap.min.css" integrity="sha384-Zug+QiDoJOrZ5t4lssLdxGhVrurbmBWopoEl+M6BdEfwnCJZtKxi1KgxUyJq13dy" crossorigin="anonymous">';  
+  echo '<link rel="stylesheet" href="'.BASE_PATH.'libraries/bootstrap/css/bootstrap.min.css">';  
 } 
 
 function render_page_top(){
@@ -97,9 +91,43 @@ function render_page_top(){
  
 function render_page_bottom(){
   if(!isset($_GET['go-embed-mode'])){
-    echo '<section class="clear-fix d-flex justify-content-center relative-bottom flex-wrap bg-dark p-4 text-white">'; do_footer(); echo '</section>';
+    echo '<section class="clear-fix d-flex justify-content-center relative-bottom flex-wrap bg-dark p-4 text-white">'; 	unset($_SESSION['status_message']);
+  
+  echo '<p align="center">&copy; '.date('Y').' '.APPLICATION_NAME.' - All rights reserved. </p>';
+	 
+	//~ add_nicedit_editor();
+		
+	if(url_contains('messaging/?mid')){
+		echo '<script type="text/javascript">
+		var myVar;    
+		var url = BasePath + "addons/messaging/new-pings.php?_=" + Math.random();
+		function showNewMessages(){
+			$("#new-messages").load(url +" #new-pings").fadeIn("slow");
+			myVar = setTimeout(showNewMessages, 10000);
+		}
+		function stopFunction(){
+			clearTimeout(myVar); // stop the timer
+		}
+		$(document).ready(function(){
+			showNewMessages();
+
+		});
+		</script>';
+		}
+    
+   //~ echo '<!-- Go to www.addthis.com/dashboard to customize your tools --> <script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-583a9f4c273aaaed"></script>  '.
+    echo "<div class='text-center col-md-12 col-xs-12'>Powered by - Wanni CMS</div>" .
+	   "</div>";
+     
+	load_scripts();
+  
+    //5. Close connection
+	# do this at the end of the page
+	if(isset($connection)) {
+	((is_null($___mysqli_res = mysqli_close($connection))) ? false : $___mysqli_res);
+		}	   echo '</section>';
   }
-  load_bootstrap();
+  load_bootstrap(); 
   echo ' </body></html>';
 }
 
@@ -142,20 +170,9 @@ function show_left_sidebar(){
            echo '<div class="padding-20 center-block">'.$pic['picture'].'</div>';
     }
 
-  //~ if(addon_is_active('rewards')){
-    //~ display_user_rewards_status();
-    //~ }
+ 
   }
     
-  do_left_sidebar();
-
-  //~ if(is_logged_in()){
-  //~ link_to(BASE_PATH.'user','&nbsp;<i class="glyphicon glyphicon-search"></i>&nbsp; Find someone',$class='btn btn-sm btn-default margin-10',$type='button');
-  //~ }
-
-  //show_sidebar_settings_menu();
-
-  //~ echo '</div>';
   if(!is_logged_in()){
     echo '<div class="extra-content-1">';
 

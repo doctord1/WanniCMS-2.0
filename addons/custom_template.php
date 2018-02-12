@@ -6,11 +6,7 @@ function show_custom_template(){
   render_page_top();// renders content above the main content
   echo '<div class="col-md-12 col-xs-12">';
   get_url_content(); //VERY IMPORTANT!!
-  if(is_home_page()){
-    show_roomshare_home();
-  }
-  //~ show_roomshare_about();
-  
+
   echo '</div>';
   render_page_bottom(); 
   // RENDERS footer and loads all scripts in scripts folder like bootstap etc

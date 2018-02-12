@@ -34,7 +34,7 @@ CREATE TABLE IF NOT EXISTS `installed` (
 
 # SETS APPLICATION NAME
 
-$app_name = 'RoomShare';
+$app_name = 'StayWithMe';
 
 define('APPLICATION_NAME', $app_name);
 // APPLICATION_NAME is now available as a constant in any page
@@ -50,15 +50,19 @@ $welcome_message = 'My welcome Message';
 define('WELCOME_MESSAGE', $welcome_message);
 // WELCOME MESSAGE is now available as a constant
 
-
-# SETS BASE PATH
-$base_path = 'http://localhost/roomshare/';
-
 // SETS SITE VERSION
 $site_version = '0.0.1';
 define('SITE_VERSION', $site_version);
 
+
+# SETS BASE PATH
+$base_path = 'http://localhost/roomshare/';
 define('BASE_PATH', $base_path);
 // BASE_PATH is now available as a constant in any page
+
+if(url_contains('https://')){
+    $base_path = str_ireplace('http://','https://',BASE_PATH);
+    define('BASE_PATH', $base_path);
+  }
 
 ?>

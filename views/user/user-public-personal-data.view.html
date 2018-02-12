@@ -1,0 +1,20 @@
+<div class="col-md-12 col-xs-12">
+<?php 
+if(isset($_SESSION['current_user']['personal-data'])){
+  $pdata = $_SESSION['current_user']['personal-data'];
+  $user_dob = $pdata['date_of_birth'];
+  $dob_arr = explode('-',$user_dob);
+  $user_year = $dob_arr[0];
+  
+  $date = getdate();
+  $present_yr = $date['year'];
+  $user_age = $present_yr - $user_year;
+  
+  echo '<div class="bg-white border p-2 m-2">'. $_SESSION['username'] .' is a '.$user_age.' year old '. $_SESSION['current_user']['gender'] .' currently living in '.$pdata['current_location'];
+  
+  echo '<br> ';
+  echo '<b>Occupation : </b> '.$pdata['occupation'];
+  echo '</div>';
+}
+?>
+</div>

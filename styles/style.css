@@ -1,1 +1,40 @@
+html{
+  font-family: 'Roboto', sans-serif !important;
+}
+body{
+  font-family: 'Roboto', sans-serif;
+  color: #191a1b;
+  font-size: 20px;
+  font-weight: 500;
+}
+
+.transparent{
+  background-color: #0000009c;
+}
+
+.transparent2{
+  background-color: #00000040;
+}
+
+.bg2{
+  background: url(images/default-images/bg3.jpg) center;
+}
+
+#benefits{
+  -webkit-animation-duration: 2s;
+  -moz-animation-duration: 2s;
+  -webkit-animation-delay: 4s;
+  -moz-animation-delay: 4s;
+  -webkit-animation-iteration-count: infinite;
+  -moz-animation-iteration-count: infinite;
+}
+
+.icon{
+  font-weight: 48px;
+}
+
+.fa{
+  font-size: 43px;
+}
+
 

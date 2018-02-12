@@ -1,0 +1,15 @@
+<?php
+if(!is_logged_in()){
+  echo '<div class="login-form p-2 m-2">' .
+  '<h4 align="center"> Login &nbsp; <small><a href="'.BASE_PATH.'index.php/register" class="p-3 bg-light ">Signup</a></small></h4>' .
+  '<form action="'.$_SESSION['current_url'].'" method="post" >' .
+  '<label for"login_name">Phone:</label><input type="number" name="phone" id="login_name" class="form-control" placeholder="Phone number" width="40px">' .
+  '<label for="password">Password:</label><input type="password" name="password" id="password" class="form-control" placeholder="password">' ;
+  echo '<br><input type="submit" name="login" value="login" class="btn btn-primary btn-lg">
+  <small class="font-weight-bold">
+  <b><a href="'.BASE_PATH.'index.php/forgot-password">Forgot password?</a></small></b>
+  <br>' .
+  '</form>' .
+  '</div>' ;
+}
+?>

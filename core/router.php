@@ -1,5 +1,11 @@
 <?php
 
+function home(){
+    load_view('default','home');
+}
+
+
+
 function url_contains($string) {
   //get the current url
 
@@ -64,7 +70,6 @@ function is_json_request(){
 function get_json_data($url=''){
   #Queris the db and returns json data
   //~ if(is_json_request($url)){
-    echo 'meaw!';
     if(empty($url)){
       $url = URL;
     }
@@ -174,24 +179,52 @@ function get_url_content($url=''){
 
     get_clean_url($url);
     show_route_content();
+    
+    enable_url_aliases();
   
   //~ echo $_GET['fetched-url'];
   //~ print_r($_GET['clean-url']);
+  //~ print_r($_SESSION);
 }
 
-function get_clean_url($url){
+
+function enable_url_aliases(){
+  //~ Url ALiases
+  if(isset($_GET['clean-url']['short-call'])){
+    $path = $_GET['clean-url']['short-call'];
+  
+    if($path == 'me'){
+      $_GET['clean-url']['short-call'] = 'show-user-profile';
+      if(is_logged_in()){
+        $_GET['clean-url']['user'] = $_SESSION['username'];
+      }
+    }
+    if($path == 'login'){
+      $_GET['clean-url']['short-call'] = 'show-login-form';
+    }
+  }
+}
+
+function get_clean_url($url=''){
   if(empty($url)){
     $url = URL;
   } 
+
   $_GET['fetched-url'] = $url;
   $url = str_ireplace(BASE_PATH,'',$url);
   $url = str_ireplace('addons/','',$url);
   $url = str_ireplace('index.php/','',$url);
   $url_params = explode('/',$url);
+  $_GET['clean-url'] = array();
+  
+  if(count($url_params) == 1){
+    $_GET['clean-url']['short-call'] = array_shift($url_params);
+    //~ short-call functions must have no parameter
+    enable_url_aliases();
+  }
   
   $state_holder = 0;
   $key_name = '';
-  $_GET['clean-url'] = array();
   
   $_GET['clean-url']['current_path'] = URL;
   $_GET['clean-url']['addon'] = array_shift($url_params);
@@ -199,24 +232,28 @@ function get_clean_url($url){
   $_GET['clean-url'][$action] = array_shift($url_params);
   $_GET['clean-url']['params'] = $url_params;
   
+  
   //~ print_r($url_params);
-  //~ foreach($url_params as $value){
-    //~ if($state_holder == 0 && !empty($value)){
-      //~ $key_name =  array_shift($url_params);
-      //~ $state_holder++;
-    //~ }
-    //~ if($state_holder == 1 && !empty($value)){
-      //~ $_GET['clean-url']["{$key_name}"] =  array_shift($url_params);
-      //~ $key_name = '';
-      //~ $state_holder = 0;
-    //~ }
-  //~ }
+  foreach($url_params as $value){
+    if($state_holder == 0 && !empty($value)){
+      $key_name =  array_shift($url_params);
+      $state_holder++;
+    }
+    if($state_holder == 1 && !empty($value)){
+      $_GET['clean-url']["{$key_name}"] =  array_shift($url_params);
+      $key_name = '';
+      $state_holder = 0;
+    }
+  }
   //~ print_r($_GET['clean-url']);
   }
 
 function show_route_content($url=''){
   if(empty($url)){
     $url = URL;
+  }
+  if($_SESSION['current_url'] == BASE_PATH || $_SESSION['current_url'] == trim(BASE_PATH,'/')){
+    redirect_to(BASE_PATH.'index.php/home');
   }
   if(isset($_GET['clean-url']['addon'])){
     $route = $_GET['clean-url']['addon'];
@@ -237,8 +274,15 @@ function show_route_content($url=''){
         if(function_exists($func_name)){
           call_user_func_array($func_name,$_GET['clean-url']['params']);
         }
+    } else if(isset($_GET['clean-url']['short-call'])){
+      $func_name = str_ireplace('-','_',$_GET['clean-url']['short-call']);
+    if(function_exists($func_name)){
+      call_user_func($func_name);
     }
-    //~ $_GET['clean-url'] = $holder;
   }
+    //~ print_r($_GET['clean-url']);
+    //~ $_GET['clean-url'] = $holder;
+  } 
+  
 
 ?>

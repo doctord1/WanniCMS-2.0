@@ -33,7 +33,8 @@ function db_delete_item($table,$id){
     $q = query_db("DELETE from {$table} where id='{$id}'",
     "Could not delete {$clean_name} ! ");
     if($q){
-      session_message('success',"{$clean_name} deleted");
+      $_SESSION['status-message'] = "<div class='alert alert-success'> {$clean_name} deleted </div>";
+      redirect_to(BASE_PATH.'index.php/home');
     }
   }
 }

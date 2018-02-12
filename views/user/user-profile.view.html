@@ -1,0 +1,57 @@
+<?php 
+  if(isset($_SESSION['current_user'])){
+    $user = $_SESSION['current_user'];
+    set_user_personal_data($user['id']);
+    //~ print_r($_SESSION['current_user']);
+  } 
+?>
+<div class="row">
+  <div class="col-md-12 text-muted col-xs-12 px-3 pt-2">
+    <?php show_user_edit_link(); ?> | <?php show_user_delete_link(); ?>
+  </div>
+  
+  <div class="col-md-5 col-xs-12 text-center p-3">
+    <?php  show_user_pic($user['user_name']); ?>
+  </div>
+  <div class="col-md-5 col-xs-12 text-center p-3">
+    <div class="row">
+      <div class="col-md-12 col-xs-12 text-center p-3">
+        
+        <b>Personal Data</b>
+        <?php 
+          if(isset($_SESSION['current_user']['personal-data']) ){
+            show_user_personal_data();
+          } else {
+            add_user_personal_data($user['user_name']);
+          } 
+        ?>
+      </div>
+      <div class="col-md-12 col-xs-12 text-center p-3">
+        <b>User ratings</b>
+        <?php // show_user_pic($user['user_name']); ?>
+      </div>
+    
+      <div class="col-md-12 col-xs-12 text-center p-3">
+        <?php if(addon_is_available('room')){ show_my_rooms(); } ?>
+      </div>
+      
+    </div>
+  </div>
+</div>
+  
+    
+
+<!--
+      //~ if(addon_is_active('messaging')){
+
+        //~ $unread = display_unread_messages();
+        //~ if($unread['count'] !== 0  && $_SESSION['username'] === $_SESSION['user_being_viewed']){
+        //~ $_SESSION['new_message_count'] = $unread['count'];
+
+        //~ echo '<br><strong> Messages :</strong><big> <a href="'.
+         //~ ADDONS_PATH .'messaging">'. $unread['count'] .'</big>  unread </a>';
+        //~ }
+      //~ }
+-->
+      
+   

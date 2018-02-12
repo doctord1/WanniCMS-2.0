@@ -1,0 +1,42 @@
+<div class="p-3">
+  <h3>Add Personal data</h3>
+  <form action="<?php echo $_SESSION['current_url']; ?>" method="post">
+    <input type="hidden" name="user_id" value="<?php echo $_SESSION['current_user']['id']; ?>" class="form-control" />
+    <label for="d_o_b">Date of birth</label>
+    <input type="date" id="d_o_b" name="date_of_birth" value="" class="form-control mb-2" placeholder="Date of Birth"/>
+    <label for="occupation">Occupation</label>
+    <input type="text" id="occupation" name="occupation" value="" class="form-control mb-2"  placeholder="Occupation" />
+    <label for="interests">Interests</label>
+    <input type="text" id="interests" name="interests" value="" class="form-control mb-2" placeholder="Interests"/>
+    <label for="ethnicity">Ethnicity</label>
+    <input type="text" id="ethnicity" name="ethnicity" value="" class="form-control mb-2" placeholder="Ethnicity"/>
+    <label for="religion">Religion</label>
+    <input type="text" id="religion" name="religion" value="" class="form-control mb-2" placeholder="Religion"/>
+    <label for="hobbies">Hobbies</label>
+    <textarea id="hobbies" name="hobbies" cols="50" rows="10" class="form-control mb-2" placeholder="hobbies" ></textarea>
+    <label for="complexion">Complexion</label>
+    <select id="complexion" name="complexion" class="form-control mb-2">
+      <option>Dark</option>
+      <option>Fair</option>
+      <option>Black</option>
+      <option>Yellow</option>
+    </select>
+    <label for="disabilities">Disabilities</label>
+    <select id="disabilities" name="disabilities" class="form-control mb-2">
+      <option>none</option>
+      <option>Autism</option>
+      <option>Chronic Illness</option>
+      <option>Hearing Loss and Deafness</option>
+      <option>Intellectual Disability</option>
+      <option>Learning Disability</option>
+      <option>Memory Loss</option>
+      <option>Mental Health</option>
+      <option>Physical Disability</option>
+      <option>Speech and language Disorders</option>
+      <option>Vision Loss and Blindness</option>
+    </select>
+    <label for="p_o_p">Place of Primary assignment</label>
+    <input type="text" id="p_o_p" name="place_of_primary_assignment" value="" class="form-control " />
+    <input type="submit" name="save-user-personal-data" class="btn btn-primary btn-large" value="Save Personal Data" />
+  </form>
+</div>                                                                                                                                                                                                                                                                                                          

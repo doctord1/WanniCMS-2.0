@@ -26,37 +26,10 @@ if(empty($_SESSION['username'])){
 }
 
 
-function session_message($class='', $string=''){
-
-  $_SESSION['status_message'] ='';
-
-  $alert = "<div class='alert'>";
-  $success = "<div class='success'>";
-  $error = "<div class='error'>";
-
-  if ($class === "alert"){
-  $message = $alert .$string ."</div>";
-
-  } else if ($class === "success"){
-  $message = $success .$string ."</div>";
-
-  } else if ($class === "error"){
-  $message = $error .$string ."</div>";
-
-  } else { $message ="";}
-
-  $_SESSION['status_message'] = "<section >" .$message ."</section>";
-
-  $output = $_SESSION['status_message'];
-
-}
-
-$_SESSION['user_id'] = 2;
-
 function show_session_message(){
   if(isset($_SESSION['nag'])){
     foreach($_SESSION['nag'] as $nag){
-      echo '<div class="error">'.$nag.'</div>';
+      echo '<div class="danger p-2 m-2">'.$nag.'</div>';
     }
   }
   if(!empty($_SESSION['status-message'])){
