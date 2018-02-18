@@ -102,7 +102,11 @@ function is_room_page(){
 }
 
 function is_room_owner($room_id){
+  if(isset($_SESSION['room-info'])){
   $rm_info = $_SESSION['room-info'];
+  } else {
+    $rm_info = get_room_information($room_id);
+  }
   if(is_logged_in()){
     $user_id = $_SESSION['user_id'];
     
@@ -113,19 +117,29 @@ function is_room_owner($room_id){
   
 }
 
+function get_rooms($start='',$num=''){
+  if(!empty($start)){
+      $start = $start.',';
+  }
+  $q = query_db("SELECT * FROM room ORDER BY id DESC limit {$start} {$num}",
+  "Could not get rooms! ");
+  if($q){
+    return $q;
+  }
+}
+
 function get_room_information($room_id){
-  $q1 = query_db("SELECT * FROM room WHERE id='{$room_id}'",
+  $q = query_db("SELECT * FROM room WHERE id='{$room_id}'",
   "Could not get Room information");
-  if($q1){
-    return $q1['result'][0];
+  if($q){
+    $_SESSION['room-info'] = $q['result'][0];
+    return $q['result'][0];
+    
   }
 }
 
 function set_room_information($room_id){
-  $q = get_room_prefernces($room_id);
-  if($q){
-  $_SESSION['room-info'] = $q['result'][0];
-  }
+  $q = get_room_preferences($room_id);
   
   $p = get_room_photos($room_id);
   if(!empty($p['result'])){
@@ -141,20 +155,96 @@ function get_room_photos($room_id){
   }
 }
 
-function get_room_prefernces($room_id){
+function get_room_preferences($room_id){
   $q = query_db("SELECT * FROM room_preferences WHERE room_id='{$room_id}'",
   "Could not get Room Preferences! ");
   if($q){
-    return $q['result'][0];
+    //~ $_SESSION['room-info']['id'] = $room_id;
+    $_SESSION['room-info']['preferences'] = $q['result'];
+    return $q['result'];
   }
 }
 
+function get_rooms_by_preference($filter_conditions){
+  $filter_conditions = sanitize($_SESSION['room-filter-conditions']);
+  $q = query_db("SELECT room_id FROM room_preferences WHERE {filter_conditions} ORDER BY id DESC limit 25",
+  "Could not get rooms by preference! ");
+  $_SESSION['filtered-rooms'] = array();
+  if($q){
+    foreach($q['result']['room_id'] as $room_id){
+      $_SESSION['filtered-room-ids'][] = $room_id;
+    }
+  }
+  return $_SESSION['filtered-room-ids'];
+}
+
+function show_filtered_rooms($filter=''){
+  //~ get_rooms_by_preference();
+  $filter = str_ireplace('+',' ',$filter);
+  $filters = explode(':',$filter);
+  $step=1;
+  foreach($filters as $key => $value){
+    $key = sanitize($key);
+    $value = sanitize($value);
+    
+    if($step < 2){
+      if(empty($_SESSION['room-filter-conditions'])){
+        $_SESSION['room-filter-conditions'] = "WHERE {$value}=";
+        $step++;
+      } else {
+        $_SESSION['room-filter-conditions'] .= "AND {$key}='{$value}' ";
+        $step++;
+      }
+    } else {
+      $_SESSION['room-filter-conditions'] .= "'{$value}'";
+        $step = 1;
+    }
+  }
+  $filter_conditions = $_SESSION['room-filter-conditions'];
+  $q = query_db("SELECT room_id FROM room_preferences {$filter_conditions} ORDER BY id DESC limit 25",
+  "Could not get rooms by preference! ");
+  if($q){ 
+    $_SESSION['filtered-rooms-count'] = $q['num_results'];
+    unset($_SESSION['filtered-room-ids']);
+    foreach($q['result'] as $room){
+      $_SESSION['filtered-room-ids'][] = $room['room_id'];
+    }
+    //~ $_SESSION['filtered-room'] ='';
+    
+    if(!empty($_SESSION['filtered-rooms-count'])){
+        $num_rooms = $_SESSION['filtered-rooms-count'];
+    } else {
+      $num_rooms = 0;
+    }
+    
+    echo '<div class="col-md-12 col-xs-12 text-muted p-3 mx-auto"> Showing rooms preference '.$_SESSION['room-filter-conditions'].'</div>';
+    echo '<div class="p-3"><h3 align="center" class="text-capitalize">'.$num_rooms.' rooms</h3></div>';
+
+    foreach($_SESSION['filtered-room-ids'] as $filtered_room_id){
+      $room = get_room_information($filtered_room_id);
+      get_room_preferences($filtered_room_id);
+      $_SESSION['filtered-room'] = $room;
+      
+      load_view('room','show-filtered-rooms');
+    }
+   
+  }
+  
+  unset($_SESSION['room-filter-conditions']);
+  
+}
+
+function clear_filters(){
+  unset($_SESSION['room-filters']);
+  redirect_to(BASE_PATH.'index.php/find-rooms');
+}
+
 function set_room_preferences($room_id){
-  $_SESSION['room-info']['preferences'] = get_room_prefernces($room_id);
+  $_SESSION['room-info']['preferences'] = get_room_preferences($room_id);
 }
 
 function show_room_list_photo($room_id,$size='150'){
-  $q = query_db("SELECT * FROM room_photos WHERE room_id='{$room_id}' order by id ASC ",
+  $q = query_db("SELECT * FROM room_photos WHERE room_id='{$room_id}' order by id DESC ",
   "Could not get Room list Photos! ");
   
   if(empty($q['result'][0]['path'])){
@@ -174,13 +264,14 @@ function show_room_photos($room_id){
 
 function show_room($room_id){
   show_session_message();
-  $_SESSION['room-info'] = get_room_information($room_id);  
   set_room_preferences($room_id);  
+  get_room_information($room_id); 
   load_view('room','show-room');
 }
 
 function add_room_photos($upload_location, $allowed_file_type = '',$filename=''){ 
   if(is_room_page() && is_room_owner($_SESSION['room-info']['id'])){
+    echo '<div class="col-md-12 col-xs-12 bg-dark text-white p-4">';
      //~ returns path of uploaded file upload location relative to BASE_PATH
     $r = dirname(dirname(__FILE__));
     
@@ -246,10 +337,14 @@ function add_room_photos($upload_location, $allowed_file_type = '',$filename='')
     <br>
     <input type="submit" name="save_item" value="Save item" class="btn btn-primary">
     </form>';
-    
+    echo '</div>';
   } else {
     
   }
+}
+
+function book_a_room(){
+  load_view('room','book-a-room');
 }
 
 function save_room(){
@@ -257,16 +352,36 @@ function save_room(){
   if(isset($_POST['save-room'])){
     $description = sanitize($_POST['room-description']);
     $location = str_ireplace(' ','+',($_POST['location']));
-    $num = sanitize($_POST['num']);
-    $duration = sanitize($_POST['duration']);
+    $num = sanitize(sanitize($_POST['max_time_a_person_can_stay']));
+    $duration = sanitize($_POST['max_duration_of_stay']);
     $max_duration_of_stay = $num .' '. $duration;
     $status = $_POST['status'];
     $user_id = $_SESSION['user_id'];
+    $room_available_date = sanitize($_POST['room_available_date']);
+    $room_expires_date = sanitize($_POST['room_expires_date']);
+    $price_per_day = sanitize($_POST['price_per_day']);
+
+    $q = query_db("INSERT INTO `room`(`id`, `description`, `owner_id`, `location`, `max_duration_of_stay`, `status`,`last_book_date`, `book_expiry_date`, `num_bookings`,`room_available_date`, `room_expires_date`,`price_per_day`,`timestamp`) VALUES ('0','{$description}','{$user_id}','{$location}','{$max_duration_of_stay}','never booked','','','','{$room_available_date}','{$room_expires_date}','{$price_per_day}','')",
+    "Could not save room! ");
     
+    if($q){
+      if(is_json_request(URL)){
+        return 'Success - room location saved!';
+      }
+      $_SESSION['status-message'] = '<div class="alert alert-success m-2 "> Location Saved!</div>';
+      redirect_to($_SESSION['prev_url']);
+    }
+  }
+  
+}
+
+function save_room_preferences($room_id){
+  if(isset($_POST['save-room-preferences'])){
+    $id = sanitize($room_id);
     $occupation = sanitize($_POST['occupation']);
     $gender = sanitize($_POST['gender']);
     $religious_views = sanitize($_POST['religion']);
-    $smoker = sanitize($_POST['smoking_habit']);
+    $smoker = sanitize($_POST['smoker']);
     $drinker = sanitize($_POST['drinker']);
     $relationship = sanitize($_POST['relationship']);
     $visitors = sanitize($_POST['visitors']);
@@ -286,33 +401,34 @@ function save_room(){
     $who_pays_electricity_bill = sanitize($_POST['who_pays_electricity_bill']);
     $power_generator = sanitize($_POST['power_generator']);
     $who_buys_fuel = sanitize($_POST['who_buys_fuel']);
-    $max_time_a_person_can_stay = sanitize($_POST['max_time_a_person_can_stay']);
-    $max_duration_of_stay = sanitize($_POST['max_duration_of_stay']);
-    $room_available_date = sanitize($_POST['room_available_date']);
-    $room_expires_date = sanitize($_POST['room_expires_date']);
     
-    
-    
-    $q = query_db("INSERT INTO `room`(`id`, `description`, `owner_id`, `location`, `max_duration_of_stay`, `status`,`last_book_date`, `book_expiry_date`, `num_bookings`) VALUES ('0','{$description}','{$user_id}','{$location}','{$max_duration_of_stay}','never booked','','','')",
-    "Could not save room! ");
-    
-    $q = query_db("SELECT id from room where location='{$location}' ORDER BY id DESC LIMIT 1",
-    "Could not get room id! ");
-    $room_id = $q['result'][0]['id'];
-    
-    //get last insert id
-    $q = query_db("INSERT INTO `room_preferences`(`id`, `room_id`, `occupation`, `gender`, `religious_views`, `smoker`, `drinker`, `relationship`, `visitors`, `max_num_sleepover_visitors`, `couples_allowed`, `do_you_sleep_in_this_room`, `is_there_a_kitchen_in_this_room`, `if_you_sleep_do_you_cook`, `if_you_cook_can_roommate_share_kitchen`, `bathroom_and_toilet`, `neigborhood_type`, `furnished`, `describe_furnishing`, `prepaid_meter`, `electricity_situation`, `who_pays_electricity_bill`, `power_generator`, `who_buys_fuel`, `max_time_a_person_can_stay`, `max_duration_of_stay`, `room_available_date`, `room_expires_date`) 
-    VALUES ('0','{$room_id}','{$occupation}','{$gender}','{$religious_views}','{$smoker}','{$drinker}','{$relationship}','{$visitors}','{$max_num_sleepover_visitors}','{$couples_allowed}','{$do_you_sleep_in_this_room}','{$is_there_a_kitchen_in_this_room}','{$if_you_sleep_do_you_cook}','{$if_you_cook_can_roommate_share_kitchen}','{$bathroom_and_toilet}','{$neigborhood_type}','{$furnished}','{$describe_furnishing}','{$prepaid_meter}','{$electricity_situation}','{$who_pays_electricity_bill}','{$power_generator}','{$who_buys_fuel}','{$max_time_a_person_can_stay}','{$max_duration_of_stay}','{$room_available_date}','{$room_expires_date}')",
-    "Could not save room preferences! ");
+    //~ check if record exists
+    $rm_pref = get_room_preferences($room_id);
+    if(empty($rm_pref)){
+      $q = query_db("INSERT INTO `room_preferences`(`id`, `room_id`, `occupation`, `gender`, `religious_views`, `smoker`, `drinker`, `relationship`, `visitors`, `max_num_sleepover_visitors`, `couples_allowed`, `do_you_sleep_in_this_room`, `is_there_a_kitchen_in_this_room`, `if_you_sleep_do_you_cook`, `if_you_cook_can_roommate_share_kitchen`, `bathroom_and_toilet`, `neigborhood_type`, `furnished`, `describe_furnishing`, `prepaid_meter`, `electricity_situation`, `who_pays_electricity_bill`, `power_generator`, `who_buys_fuel`) 
+      VALUES ('0','{$room_id}','{$occupation}','{$gender}','{$religious_views}','{$smoker}','{$drinker}','{$relationship}','{$visitors}','{$max_num_sleepover_visitors}','{$couples_allowed}','{$do_you_sleep_in_this_room}','{$is_there_a_kitchen_in_this_room}','{$if_you_sleep_do_you_cook}','{$if_you_cook_can_roommate_share_kitchen}','{$bathroom_and_toilet}','{$neigborhood_type}','{$furnished}','{$describe_furnishing}','{$prepaid_meter}','{$electricity_situation}','{$who_pays_electricity_bill}','{$power_generator}','{$who_buys_fuel}')",
+      "Could not save room preferences! ");
+    } else {
+      $q = query_db("UPDATE `room_preferences` SET occupation='{$occupation}',`gender`='{$gender}',`religious_views`='{$religious_views}',`smoker`='{$smoker}',`drinker`='{$drinker}',`relationship`='{$relationship}',`visitors`='{$visitors}',`max_num_sleepover_visitors`='{$max_num_sleepover_visitors}',`couples_allowed`='{$couples_allowed}',`do_you_sleep_in_this_room`='{$do_you_sleep_in_this_room}',`is_there_a_kitchen_in_this_room`='{$is_there_a_kitchen_in_this_room}',`if_you_sleep_do_you_cook`='{$if_you_sleep_do_you_cook}',`if_you_cook_can_roommate_share_kitchen`='{$if_you_cook_can_roommate_share_kitchen}',`bathroom_and_toilet`='{$bathroom_and_toilet}',`neigborhood_type`='{$neigborhood_type}',`furnished`='{$furnished}',`describe_furnishing`='{$describe_furnishing}',`prepaid_meter`='{$prepaid_meter}',`electricity_situation`='{$electricity_situation}',`who_pays_electricity_bill`='{$who_pays_electricity_bill}',`power_generator`='{$power_generator}',`who_buys_fuel`='{$who_buys_fuel}' WHERE id='{$id}'",
+      "Could not update room preferences! ");
+    }
     if($q){
-      if(is_json_request(URL)){
-        return 'Success - room location saved!';
-      }
-      $_SESSION['status-message'] = '<div class="alert alert-success m-2 "> Location Saved!</div>';
-      redirect_to($_SESSION['prev_url']);
+      $_SESSION['status-message'] = '<div class="alert alert-success pl-3">Room preferences saved!</div>';
+      redirect_to($_SESSION['current_url']);
     }
   }
   
+  load_view('room','add-room-preferences');
+}
+
+function show_room_preferences($room_id){
+  get_room_preferences($room_id);
+  load_view('room','show-room-preferences');
+}
+
+function show_room_tabs($room_id){
+  get_room_information($room_id);
+  load_view('room','show-room-tabs');
 }
 
 function show_my_rooms(){
@@ -418,38 +534,10 @@ function find_room($location=''){
   show_map_of_location($location);
 }
 
-function show_rooms_list($q,$image_size='150'){
-  $count = $q['num_results'];
-  foreach($q['result'] as $result){
-    $locs = explode(',',$result['location'],5);
-  echo '
-  <div class="media p-2 border m-2 bg-white">
-    <a href="'.BASE_PATH.'index.php/room/action/show-room/'.$result['id'].'">';
-    show_room_list_photo($result['id'],$image_size);
-    echo '</a>
-    <div class="media-body pl-2">
-      <h4 class="media-heading font-weight-bold"><a href="'.BASE_PATH.'index.php/room/action/show-room/'.$result['id'].'">'.$result['description'].'</a></h4>
-      <em class="text-muted">';
-       $make_tag = 1;
-        foreach($locs as $area){
-          if($make_tag <= 4){
-            echo '<a href="'.BASE_PATH.'index.php/room/action/find-room/'.$area.'">'.str_ireplace('+',' ',$area).'</a>,  ';
-            $make_tag++;
-          } else {
-            echo ' '.str_ireplace('+',' ',$area).'  ';
-            $make_tag = '';
-          }
-        }
-      echo '
-      <br>
-      <div class="d-block clearfix  border relative-bottom p-2 align-bottom">status: '.$result['status'].' | added - ';
-      show_timeago($result['timestamp']); 
-      echo '
-      </div>
-      </em>
-    </div>
-  </div>' ;
-  
+function show_rooms_list($q='',$image_size='100'){
+  if($q){
+    $_SESSION['rooms-list'] = $q;
+    load_view('room','show-rooms-list');
   }
 }
 
@@ -499,11 +587,13 @@ function add_room(){
 }
 
 function show_map_of_location($location){
-  echo '
-  <div class=" embed-responsive embed-responsive-21by9 m-5 mx-auto bg-dark">
-    <iframe class="embed-responsive-item" src="//www.google.com/maps/embed/v1/place?q='.$location.'&zoom=17&key=AIzaSyDOZ1oyumjT9vKGd1PVs0hfMLqTbDgHd_A">
-    </iframe>
-  </div>';
+  if(!empty($location)){
+    echo '
+    <div class=" embed-responsive embed-responsive-21by9 m-2 mx-auto bg-dark">
+      <iframe class="embed-responsive-item" src="https://www.google.com/maps/embed/v1/place?q='.$location.'&zoom=14&key=AIzaSyDOZ1oyumjT9vKGd1PVs0hfMLqTbDgHd_A">
+      </iframe>
+    </div>';
+  }
 }
 
 function show_rooms_list_actions(){
@@ -530,6 +620,7 @@ function edit_room(){
   if(isset($_POST['update-room'])){
     $id = $_SESSION['room-info']['id'];
     $description = $_POST['description'];
+    $price_per_day = $_POST['price_per_day'];
     if(isset($_POST['available'])){
       $status = 'available';
     } else {
@@ -538,9 +629,10 @@ function edit_room(){
     $num = sanitize($_POST['max_time_a_person_can_stay']);
     $duration = sanitize($_POST['max_duration_of_stay']);
     $max_duration_of_stay = $num .' '. $duration;
-    $q = query_db("UPDATE room SET description='{$description}', max_duration_of_stay='{$max_duration_of_stay}', status='{$status}' WHERE id='{$id}'",
+    $q = query_db("UPDATE room SET description='{$description}', max_duration_of_stay='{$max_duration_of_stay}', status='{$status}', price_per_day='{$price_per_day}' WHERE id='{$id}'",
     "Could not update room! ");
     if($q){
+      redirect_to(BASE_PATH.'index.php/room/action/show-room/'.$id);
       get_room_information($id);
     }
   }

@@ -4,7 +4,7 @@ function show_bootstrap_brand_and_menus(){
   $menu_links = get_user_defined_bootstrap_menu_links();
   $menu = '
       <nav class="navbar navbar-expand-lg navbar-light bg-white">
-        <a class="navbar-brand" href="'.BASE_PATH.'">'.APPLICATION_NAME.'</a>
+        <a class="navbar-brand" href="'.BASE_PATH.'index.php/home">'.APPLICATION_NAME.'</a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
         </button>
@@ -23,7 +23,7 @@ function show_bootstrap_brand_and_menus(){
           }
           $menu .= '
           <li class="nav-item dropdown border border-info rounded m-2">
-            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">User</a>
+            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">My Account</a>
              <div class="dropdown-menu" aria-labelledby="navbarDropdown">';
             
             if(!is_logged_in()){
@@ -52,7 +52,7 @@ function get_user_defined_bootstrap_menu_links(){
   if(is_logged_in()){
     $menu['Add Room'] = BASE_PATH.'index.php/room/action/add-room'; 
   }
-  $menu['Find Rooms by Location'] = BASE_PATH.'index.php/room/action/find-room'; 
+  //~ $menu['Find Rooms by Location'] = BASE_PATH.'index.php/room/action/find-room'; 
   return $menu;
 }
 ?>

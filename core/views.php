@@ -4,7 +4,7 @@ function load_view($folder,$viewname){
   if(!empty($viewname)){
     $r = dirname(dirname(__FILE__));
     $file = $r.'/views/'.$folder.'/'.$viewname.'.view.html';
-    require_once($file);
+    require($file);
   }
 }
 
@@ -12,7 +12,7 @@ function load_list_view($folder,$viewname){
   if(!empty($viewname)){
     $r = dirname(dirname(__FILE__));
     $file = $r.'/views/'.$folder.'/'.$viewname.'.view.html';
-    require_once($file);
+    require($file);
   }
 }
 

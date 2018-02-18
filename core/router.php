@@ -100,7 +100,7 @@ function get_json_data($url=''){
     $_GET['get-data']['parameter'] = $url_params[3];
     $_GET['get-data']['pager-start'] = $url_params[4];
     $_GET['get-data']['pager-end'] = $url_params[5];
-    print_r($_GET['get-data']);
+    //~ print_r($_GET['get-data']);
     $table = $_GET['get-data']['table'];
     $column = $_GET['get-data']['column'];
     $parameter = $_GET['get-data']['parameter'];
@@ -183,6 +183,7 @@ function get_url_content($url=''){
     enable_url_aliases();
   
   //~ echo $_GET['fetched-url'];
+  //~ echo '<br>';
   //~ print_r($_GET['clean-url']);
   //~ print_r($_SESSION);
 }
@@ -253,6 +254,7 @@ function show_route_content($url=''){
     $url = URL;
   }
   if($_SESSION['current_url'] == BASE_PATH || $_SESSION['current_url'] == trim(BASE_PATH,'/')){
+    
     redirect_to(BASE_PATH.'index.php/home');
   }
   if(isset($_GET['clean-url']['addon'])){
@@ -283,6 +285,9 @@ function show_route_content($url=''){
     //~ print_r($_GET['clean-url']);
     //~ $_GET['clean-url'] = $holder;
   } 
+  
+
+
   
 
 ?>

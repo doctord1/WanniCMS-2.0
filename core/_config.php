@@ -39,11 +39,8 @@ $app_name = 'StayWithMe';
 define('APPLICATION_NAME', $app_name);
 // APPLICATION_NAME is now available as a constant in any page
 
-define('PROTOCOL', 'https://');
-// APPLICATION_NAME is now available as a constant in any page
 
-
-define('URL', PROTOCOL.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI']);
+define('URL', 'http://'.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI']);
 // URL is now available as a constant in any page
 
 
@@ -59,10 +56,13 @@ define('SITE_VERSION', $site_version);
 
 
 # SETS BASE PATH
-$base_path = PROTOCOL.'localhost/roomshare/';
+$base_path = 'http://localhost/roomshare/';
 define('BASE_PATH', $base_path);
 // BASE_PATH is now available as a constant in any page
 
-
+if(url_contains('https://')){
+    $base_path = str_ireplace('http://','https://',BASE_PATH);
+    define('BASE_PATH', $base_path);
+  }
 
 ?>

@@ -12,15 +12,11 @@ if(!isset($_SESSION['CREATED'])) {
 
 
 if(isset($_SERVER['HTTP_REFERER'])){
-    $_SESSION['prev_url'] =$_SERVER['HTTP_REFERER'];
-    
+  $_SESSION['prev_url'] =$_SERVER['HTTP_REFERER'];
 }
-$host = $_SERVER['HTTP_HOST'];
-if($host == 'localhost'){
-  $_SESSION['current_url'] = 'http://'.$_SERVER['HTTP_HOST']. $_SERVER['REQUEST_URI'];
-} else {
-  $_SESSION['current_url'] = 'http://'.$_SERVER['HTTP_HOST']. $_SERVER['REQUEST_URI'];
-}
+
+$_SESSION['current_url'] = PROTOCOL.$_SERVER['HTTP_HOST']. $_SERVER['REQUEST_URI'];
+
 if(empty($_SESSION['username'])){
   $_SESSION['role'] = 'anonymous';
 }
@@ -44,5 +40,10 @@ $_SESSION['LAST_ACTIVITY'] = time(); // update last activity time stamp
 $_SESSION['base_path'] = BASE_PATH;
 $_SESSION['temp_container']='';
 
+
+
+if(PROTOCOL == 'https://' && url_contains('http://')){
+  redirect_to(PROTOCOL.$_SERVER['HTTP_HOST']. $_SERVER['REQUEST_URI']);
+}
 
 ?>

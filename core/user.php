@@ -166,7 +166,8 @@ function is_user_page(){
   get_clean_url();
   if(isset($_GET['clean-url'])){
     if((isset($_GET['clean-url']['short-call']) && $_GET['clean-url']['short-call'] == 'show-user-profile') 
-    || $_GET['clean-url']['action'] == 'show-user-profile' || $_GET['clean-url']['addon_path'] == 'user'){
+    || (isset($_GET['clean-url']['action']) && $_GET['clean-url']['action'] == 'show-user-profile') 
+    || (isset($_GET['clean-url']['addon_path']) && $_GET['clean-url']['addon_path'] == 'user')){
         return true;
     }else{
       return false;
@@ -370,11 +371,6 @@ if (isset($submit)){
 
 function get_user_pic($user='',$pic_class='',$length=''){
 
-  // if reward addon is active, Get reward badge
-  if(addon_is_active('rewards')){
-    $badge = get_reward_badge($user);
-    }
-
   if($user !== ''){
     $user = trim(sanitize($user));
   }else{ $user = $_SESSION['username']; }
@@ -392,28 +388,25 @@ $pic_small = default_pic_fallback($pic=$result['picture_thumbnail'], $size='smal
 $pic_medium =  default_pic_fallback($pic=$result['picture'], $size='medium');
 
 if(is_user_page() && ($_SESSION['user_being_viewed'] == $user || is_admin())){
-$picture = '<span class="clear"><a href="'.BASE_PATH .'uploads/files/user/'.$user .'.jpg"  rel="prettyPhoto[\"'.$user.'_gal\"]">'.
-'<img src="'.$pic_medium.'?str='.$time.'" alt="user picture" id="" class="center-block img-responsive  '.$pic_class.'" '.$dimensions.'></a>
-</span><br><br>';
-
+  $picture = '<span class="clear"><a href="'.BASE_PATH .'uploads/files/user/'.$user .'.jpg"  rel="prettyPhoto[\"'.$user.'_gal\"]">'.
+  '<img src="'.$pic_medium.'?str='.$time.'" alt="user picture" id="" class="center-block img-responsive  '.$pic_class.'" '.$dimensions.'></a>
+  </span><br><br>';
 } else {
-$picture = '<span class="clear"><a href="'.BASE_PATH .'user/?user='.$user .'">'.
-'<img src="'.$pic_medium.'?str='.$time.'" alt="user picture" id="" class="center-block img-responsive '.$pic_class.'" '.$dimensions.'></a></span><span class="badge padding-5">'.$badge.'</span>';
-  }
-$thumbnail = '<span class="small-pic inline-block"><a href="'.BASE_PATH .'user/?user='.$user .'">'.
-'<img src="'.$pic_small.'?str='.$time.'" alt="user picture" id="profile-thumbnail" class="'.$pic_class.' img-rounded"'.$dimensions.'></a><span class="badge padding-5 margin-3 ">'.$badge.'</span></span>';
+  $picture = '<span class="clear"><a href="'.BASE_PATH .'user/?user='.$user .'">'.
+  '<img src="'.$pic_medium.'?str='.$time.'" alt="user picture" id="" class="center-block img-responsive '.$pic_class.'" '.$dimensions.'></a></span>';
+}
+  $thumbnail = '<span class="small-pic inline-block"><a href="'.BASE_PATH .'user/?user='.$user .'">'.
+  '<img src="'.$pic_small.'?str='.$time.'" alt="user picture" id="profile-thumbnail" class="'.$pic_class.' img-rounded"'.$dimensions.'></a></span>';
 
-$title = "<h1>" .ucfirst($_GET['user']) ."'s Profile </h1><hr> " ;
 
-if($user === $_SESSION['username']){
-
-  $_SESSION['picture'] = '<a class="tooltip" href="'.BASE_PATH .'user/?user='.$result['user_name'] .'">'.
+if(!empty($user) && $user === $_SESSION['username']){
+  $_SESSION['picture'] = '<a class="tooltip" href="'.BASE_PATH .'user/?user='.$user .'">'.
   '<img src="'.$pic_medium.'"></a>';
-  $_SESSION['picture_thumbnail'] = '<a href="'.BASE_PATH .'user/?user='.$result['user_name'] .'" title="'.$result['user_name'] .'">'.
+  $_SESSION['picture_thumbnail'] = '<a href="'.BASE_PATH .'user/?user='.$user .'" title="'.$user .'">'.
   '<img src="'.$pic_small.'"></a>';
-  }
+}
 
-$output = array('picture'=>$picture, 'thumbnail'=>$thumbnail, 'title'=>$title);
+$output = array('picture'=>$picture, 'thumbnail'=>$thumbnail, 'title'=>$user);
 return $output;
 }
 
@@ -442,7 +435,7 @@ $pic_medium =  default_pic_fallback($pic=$result['picture'], $size='medium');
 $pic_large=  default_pic_fallback($pic=$result['picture'], $size='large');
 
 echo '<a href="'.BASE_PATH .'index.php/user/action/show-user-profile/user/'.$user .'">'.
-'<img src="'.$pic_large.'" alt="user picture" id="" class="img-fluid'.$pic_class.'"'.$dimensions.'></a>';
+'<img src="'.$pic_large.'" alt="user picture" id="" class="'.$pic_class.'"'.$dimensions.'></a>';
 //~ echo '<span class="badge padding-5">'.$badge.'</span>';
 }
 
@@ -608,6 +601,7 @@ function edit_user($user=''){
             <br>Email :<br><input type='email' name='email' class='form-control' value='{$row['email']}' placeholder='Email'>
             <br>Secret Question :<br> <span class='green-text'>\"".$_SESSION['secret_question']."\"</span>
             <br> Answer:<br><input type='text' class='form-control' name='secret_answer' value='' placeholder='answer'>
+            <textarea name='short_note' rows='2' class='form-control' ></textarea>
             ";
             if($_SESSION['role']==='admin'){
 
@@ -793,16 +787,16 @@ function random_password( $length = 8 ) {
 function default_pic_fallback($pic,$size=''){
 
   if(empty($pic) && $size ===''){
-    $picture = BASE_PATH.'uploads/files/default_images/default-pic-small.png';
+    $picture = BASE_PATH.'files/default_images/default-pic-small.png';
     return $picture;
   } else if(empty($pic) && $size === 'small'){
-    $picture = BASE_PATH.'uploads/files/default_images/default-pic-small.png';
+    $picture = BASE_PATH.'files/default_images/default-pic-small.png';
     return $picture;
   } else if(empty($pic) && $size === 'medium'){
-    $picture = BASE_PATH.'uploads/files/default_images/default-pic.png';
+    $picture = BASE_PATH.'files/default_images/default-pic.png';
     return $picture;
   } else if(empty($pic) && $size === 'large'){
-    $picture = BASE_PATH.'uploads/files/default_images/default-pic.png';
+    $picture = BASE_PATH.'files/default_images/default-pic.png';
     return $picture;
   } else {
     $picture = $pic;
@@ -856,10 +850,10 @@ function user_search(){
       } elseif($_POST['filter'] == 'all'){
         $condition = "";
       }
-      $query = query_db("SELECT * FROM user {$condition} order by id DESC",
+      $query = query_db("SELECT * FROM core_user {$condition} order by id DESC",
       "Search failed! ");
     } else {
-      $query = query_db("SELECT * FROM user WHERE picture_thumbnail !='' ORDER BY id DESC LIMIT 30 ","Cannot fetch users !");
+      $query = query_db("SELECT * FROM core_user WHERE picture_thumbnail !='' ORDER BY id DESC LIMIT 30 ","Cannot fetch users !");
     }
     if(is_json_request()){
       header('Content-Type: application/json');
@@ -999,6 +993,7 @@ function logout(){
 
 function process_user_registration(){
   if(isset($_POST['submit']) && $_POST['submit'] ==='register') {
+    $ip_address = $_SERVER['REMOTE_ADDR'];
     $username = str_ireplace(' ','_',strtolower(trim(sanitize($_POST['user_name']))));
     $password = trim(sanitize($_POST['password']));
     $email = trim(sanitize($_POST['email']));
@@ -1024,7 +1019,7 @@ function process_user_registration(){
     $created = date('c');
 
     // First check for uniqueness of phone and email field
-    $value = query_db("SELECT id FROM user WHERE phone='{$phone}' OR email='{$email}'",
+    $value = query_db("SELECT id FROM core_user WHERE phone='{$phone}' OR email='{$email}'",
     "Could not check uniqueness of phone / email");
 
     if($value['num_results'] > 0){
@@ -1038,8 +1033,8 @@ function process_user_registration(){
     } else {
 
       //register / add user
-      $save_to_db = query_db("insert into core_user(`id`, user_name, `password`, `email`, `created_time`, `last_login`,`login_count`,`logged_in`, `phone`, `site_funds_amount`, `role`, `account_type`, `state`, `picture`, `picture_thumbnail`, `secret_question`, `secret_answer`, `status`, `bank_account_no`, `bank_name`, `full_name`,`full_name`)
-       VALUES ('0', '{$username}', '{$hashed_password}', '{$email}', '{$created}', '{$created}', '0', 'no', '{$phone}', '{$bonus_funds}','authenticated','{$account_type}','{$state}','','','{$secret_question}','{$secret_answer}','not verified','0','','','{$gender}')","Registration Failed!");
+      $save_to_db = query_db("INSERT INTO `core_user`(`id`, `user_name`, `password`, `email`, `created_time`, `last_login`, `login_count`, `logged_in`, `phone`, `ip_address`, `last_login_ip`, `role`, `picture`, `picture_thumbnail`, `secret_question`, `secret_answer`, `status`, `full_name`, `gender`)
+       VALUES ('0', '{$username}', '{$hashed_password}', '{$email}', '{$created}', '{$created}', '0', 'no', '{$phone}', '{$ip_address}','','authenticated','','','{$secret_question}','{$secret_answer}','not verified','','{$gender}')","Registration Failed!");
       upload_user_pic();
     }
 
@@ -1052,7 +1047,8 @@ function process_user_registration(){
       }	
         
         
-      status_message('success', 'Registration Successful!');
+      $_SESSION['status-message'] =  '<div class="alert alert-success">Registration Successful!</div>';
+      redirect_to(BASE_PATH.'index.php/show-login-form');
       echo "<div class='container'><a href='".BASE_PATH."show-login-form'><button> Login Now </button></a></div>";
     }
   }

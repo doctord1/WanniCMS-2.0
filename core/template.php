@@ -32,7 +32,7 @@ function start_page(){
 
   <!-- FONT
   –––––––––––––––––––––––––––––––––––––––––––––––––– -->
-  
+  <script defer src="https://use.fontawesome.com/releases/v5.0.6/js/all.js"></script>
 
   <!-- CSS
   –––––––––––––––––––––––––––––––––––––––––––––––––– -->
@@ -40,7 +40,7 @@ function start_page(){
   <link href="https://fonts.googleapis.com/css?family=Varela+Round" rel="stylesheet">
 	';
 
-  echo '<link href="'.BASE_PATH .'libraries/font-awesome/css/font-awesome.min.css" rel="stylesheet" media="screen">';
+  //~ echo '<link href="'.BASE_PATH .'libraries/font-awesome/css/font-awesome.min.css" rel="stylesheet" media="screen">';
   echo '<!-- Favicon
   –––––––––––––––––––––––––––––––––––––––––––––––––– -->
   <link rel="icon" type="image/png" href="'.BASE_PATH .'uploads/files/default_images/favicon.png">
