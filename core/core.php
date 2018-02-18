@@ -612,10 +612,15 @@ function deny_access(){
 	
 function log_in_to_continue(){
 	if(!is_logged_in()){
-	 echo "<div class='main-content-region'><p align='center'><a href='".BASE_PATH."user?action=login&redirect_to=".$_SESSION['current_url']."'>Log in </a> 
-	 or <a href='".BASE_PATH."user?action=register&redirect_to=".$_SESSION['current_url']."'>Signup </a> to continue .</p></div>";
-		}
-	}
+    echo "<div class='p-3 m-3'>
+      <p align='center'>
+        <a href='".BASE_PATH."index.php/show-login-form'>Log in </a> 
+        or 
+        <a href='".BASE_PATH."index.php/register'>Signup </a> to continue .
+      </p>
+    </div>";
+  }
+}
 
 function log_in_to_comment(){
 	 echo "<p align='center'>You must <a href='".BASE_PATH."index.php/show-login-form?redirect_to=".$_SESSION['current_url']."'>Log in </a> 
