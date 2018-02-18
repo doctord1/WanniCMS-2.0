@@ -39,7 +39,7 @@ function show_bootstrap_brand_and_menus(){
           
         </ul>
           <span class="navbar-text">
-            Share a room, make a friend and some money!
+            '.WELCOME_MESSAGE.'
           </span>
         </div>
       </nav>';
