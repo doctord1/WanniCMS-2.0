@@ -63,6 +63,9 @@ $base_path = PROTOCOL.'localhost/roomshare/';
 define('BASE_PATH', $base_path);
 // BASE_PATH is now available as a constant in any page
 
-
+if($_SESSION['current_url'] == PROTOCOL.'staywithme.com.ng' 
+|| $_SESSION['current_url'] == $base_path){
+  header($_SESSION['current_url'].'/index.php');
+}
 
 ?>
