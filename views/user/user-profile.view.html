@@ -19,7 +19,7 @@
         
         <b>Personal Data</b>
         <?php 
-          if(isset($_SESSION['current_user']['personal-data']) ){
+          if(!empty($_SESSION['current_user']['personal-data']) ){
             show_user_personal_data();
           } else {
             add_user_personal_data($user['user_name']);

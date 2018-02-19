@@ -2,7 +2,11 @@
 function get_user_personal_data($user_id){
   $value = query_db("SELECT * FROM user_personal_data WHERE user_id='{$user_id}' LIMIT 1",
   "Failed to get user personal data! ");
-  return $value['result'][0];
+  if(!empty($value['result'])){
+    return $value['result'][0];
+  } else {
+    return '';
+  }
 }
 
 function set_user_personal_data($user_id){
