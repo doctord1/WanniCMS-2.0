@@ -1,0 +1,39 @@
+<!--
+<script src='https://www.google.com/recaptcha/api.js'></script>
+-->
+<?php $lock = ''; $text_type = 'text'; ?>
+<div class="p-3">
+  <h4>Any Suggestions or Problems?</h4>
+  <form action="<?php echo $_SESSION['current_url']; ?>" method="post">
+  <label for="feedback-message">Let us know and we will get back to you</label>
+  <input  name="your-name" value="<?php
+  if(is_logged_in()){
+      echo $_SESSION['username'];
+      $lock = ' readonly ';
+      $text_type = 'hidden';
+    }
+  ?>" type="<?php echo $text_type; ?>" class="form-control m-1" placeholder="Your name" <?php echo $lock; ?>/>
+  <input name="contact" value="<?php
+  if(is_logged_in()){
+      echo $_SESSION['phone'];
+    }
+  ?>" type="<?php echo $text_type; ?>"  class="form-control m-1" placeholder="Your phone number / email" <?php echo $lock; ?>/>
+  <textarea name="message" cols="50" id="feedback-message" rows="3" class="form-control m-1" placeholder="Your message here"></textarea>
+<!--
+  <label for="captcha">Captcha</label>
+      <small class="form-text tiny-text"> To prove that you are a human being and not a spam bot,<br>
+           write the <strong>fifth</strong> word in the following sentence<br></small>
+          <b>Jamsten lookouts promo in egusi farm.</b><br>
+        <input type="text" name="captcha" class="form-control" value="" placeholder="[Captcha] - fifth word here" required>
+-->
+<!--
+        <div class="g-recaptcha m-1" data-sitekey="6LeBmUgUAAAAAIx1Nlbr_XWfPUxvsl-R981Sy1ZG"></div>
+-->
+
+  <input type="submit" name="send-feedback" value="Save" class="m-1 btn btn-primary font-weight-bold"/>
+  </form>
+
+  <div class="p-2">
+    <a class="text-light" href="https://tawk.to/chat/5a8f02d1d7591465c707ec19/default/?$_tawk_popout=true">Or Click here &raquo; to Live chat with us!</a>
+  </div>
+</div>

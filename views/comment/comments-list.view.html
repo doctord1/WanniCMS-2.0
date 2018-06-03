@@ -1,0 +1,38 @@
+<table class="table table-striped">
+  <tbody>
+
+
+    <?php $comments = $_SESSION['post']['comments'];
+
+    foreach($comments as $comment){
+    echo '<tr class="border border-left-0 border-right-0">';
+    echo '<td class="p-3">';
+      show_user_pic($comment['comment_author'],'rounded-circle','50px');
+      echo '</td>
+      <td class="p-3 col-md-12 col-xs-12">
+        <h5 class="mt-0">'.$comment['comment_author'].' says > </h5>
+          <time class="timeago col-md-12 col-xs-12 text-right d-block px-3" datetime="'.$comment['created'].'">';
+          show_timeago($comment['created']);
+          echo '</time>';
+          echo '<div class="d-block p-2">';
+          echo parse_text_for_output($comment['content']);
+          echo '</div>';
+          if( is_logged_in() && (($comment['comment_author'] == $_SESSION['username']) || is_author() || is_admin())){
+            echo ' <span class="tiny-edit-text d-inline"> <a href="'.BASE_PATH."post/action/edit-comment/".$comment['id'].'"> edit </a> &nbsp;&nbsp';
+            echo '<a href="'.BASE_PATH."post/action/delete-comment/".$comment['id'].'" onclick="return confirm(\'Are you sure you want to delete this comment? \')"> delete </a></span><br>';
+          }
+
+          if($_SESSION['post']['num_comments'] < 1 && is_logged_in()){
+             status_message('alert', 'There are no responses to show!');
+          } else {
+            $_SESSION['post']['has_comments'] = 'yes';
+          }
+    }
+      echo '
+      </td>
+    </tr>';
+
+    ?>
+
+  </tbody>
+</table>

@@ -2,14 +2,27 @@
 <div class="row p-3 bg-primary"><h3>Signup</h3></div>
 <div class="row">
 <div class="border col-md-5 col-xs-12 m-3 p-3 bg-white">
-  
-  <form action="<?php echo $_SESSION['current_url']; ?>" method="post" style="max-width: 500px">
- 
+
+  <form action="<?php echo $_SESSION['current_url']; ?>" method="post" style="max-width: 500px" enctype="multipart/form-data">
+  Account type: <br>
+  <div class="input-group py-2">
+  <span class="input-group-item mx-2">
+    <label for="personal"> Personal </label>
+       <input type="radio" id="personal" name="account-type" value="Personal" checked required />
+    </span>
+    <span class="input-group-item mx-2">
+    <label for="corporate"> Corporate </label>
+       <input type="radio" id="corporate" name="account-type"  value="Coporate" required />
+    </span>
+  </div>
   Email: <br><input class="form-control" type="email" name="email" id="email" placeholder="Email" required><br>
   Username:<br> <input class="form-control" type="text" name="user_name" id="user_name" placeholder="username" required><br>
   Password:<br> <input class="form-control" type="password" name="password" id="password" placeholder="password is case sensitive" required><br>
   Confirm Password:<br> <input class="form-control" type="password" name="password" id="password" placeholder="password" required><br>
   Phone No.:<br> <input class="form-control" type="tel" name="phone" placeholder="phone number" required><br>
+  <label for="d_o_b">Date of birth</label>
+  <input type="date" id="d_o_b" name="date_of_birth" value="<?php echo $user['date_of_birth']; ?>" class="form-control mb-2" placeholder="Date of Birth" required>
+
   Write a Secret Question.:<br>
   <span class="tiny-text">This is the question you will be asked, if you forget your password and cannot log in ... </span><br>
   <input class="form-control" type="text" name="secret_question" placeholder="secret question" required><br>Answer your Secret Question.:<br>
@@ -22,9 +35,14 @@
   <option>Female</option>
   </select>
   <br>
+  Select profile photo<br>
+  <!-- MAX_FILE_SIZE must precede the file input field -->
+  <input type="hidden" name="MAX_FILE_SIZE" value="5000000" />
+  <!-- Name of input element determines name in $_FILES array -->
+  <input type="file" size="500" name="media_field"  value="" required class="form-control btn btn-primary mb-2" >
   <input type="submit" name="submit" value="register" class="submit btn btn-primary"><br>
   </form>
   </div>
-  
+
   <div class="col-md-5 col-xs-12 p-3"> <img src="http://via.placeholder.com/350x350" class="p-2 m-2 img-fluid"> </div>
 </div>

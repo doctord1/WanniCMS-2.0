@@ -1,0 +1,27 @@
+<div class="row p-3 my-3">
+  <h4 class="d-block">Recently Online</h4>
+<?php
+$online = $_SESSION['temp'];
+$last_seen = array();
+
+echo '<div class="col-md-12 col-xs-12">';
+foreach($online['result'] as $result){
+
+  $name = $result['user_name'];
+  $login_timeago = (( time() - $result['last_login']) / 60 );
+
+  if($login_timeago < 900){
+    $last_seen[]= $name;
+
+      $users_text_only = '<span><a href="'. BASE_PATH .'user/action/show-user-profile/'.$name.'">'.$name.'</a>, </span> &nbsp;';
+      echo $users_text_only;
+
+  }
+}
+echo '</div>';
+
+if(!empty($last_seen)){
+  $_SESSION['recently_logged_in'] = $last_seen;
+}
+?>
+</div>

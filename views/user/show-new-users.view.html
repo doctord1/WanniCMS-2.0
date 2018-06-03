@@ -1,0 +1,9 @@
+<?php
+  $users = get_new_users();
+  echo '<div class="center-block m-3 p-3 bg-white">
+  <h3>New Users</h3>';
+  foreach($users as $user){
+    show_user_pic($user['user_name'],'rounded-circle m-2',50);
+  }
+  echo '</div>';
+?>

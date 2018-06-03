@@ -1,0 +1,16 @@
+<?php
+$q = $_SESSION['feedback'];
+echo '<ol>';
+  foreach($q['result'] as $result){
+    echo '<div class="card margin-3 padding-10">';
+    echo '<li>';
+    link_to_user_by_id($result['user_id']);
+    echo '<hr><i class="red-text">"'.$result['reason_for_not_subscribing'].'"';
+    echo '</i>&nbsp;-&nbsp; <span class="tiny-text">caller - '.$result['caller'].'<br>'.$result['last_follow_up_call_date'].'</span>';
+    echo '</li>';
+    echo '</div>';
+  }
+  echo '</ol>';
+    //~ echo '</div>';
+    
+?>

@@ -1,0 +1,20 @@
+<?php
+$result = $_SESSION['current-comment'];
+ echo '<div class="col-md-12 col-xs-12 p-4">
+ <h3>Editing Comment for Post &raquo; '.str_ireplace('-',' ',$_SESSION['post']['post_name']).'</h3>
+ <form method="post" action="'.$_SESSION['current_url'].'" class="whitesmoke padding-20" enctype="multipart/form-data">
+    <input type="hidden" name="parent_id" value="'.$result['parent_id'].'">
+    <input type="hidden" name="MAX_FILE_SIZE" value="5000000" />
+    <input type="hidden" name="ref_url" value="'.$_SESSION['prev_url'].'" />
+    <!-- Name of input element determines name in $_FILES array -->';
+    //if($comment_upload_allowed === 'true'){
+    //echo '<input type="file" size="500" name="image_field" value="" placeholder="choose picture">';
+    //}
+    echo' 
+    <label for="comment">Comment:</label>
+    <textarea name="content" id="comment" size="5" class="form-control">'.$result['content'].'</textarea>
+    <input type="submit" name="edit_comment" value="Save" class="btn btn-primary my-2">
+    </form> 
+    </div>';
+  unset($_SESSION['current-comment']);
+?>

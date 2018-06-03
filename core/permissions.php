@@ -2,10 +2,12 @@
 
 
 function user_has_role($requested_role){
+  $has_role ='';
   if(isset($_SESSION['username'])){
-		$role = explode(',',$_SESSION['role']);
-		$has_role = '';
-		foreach ($role as $r){
+
+    $role = explode(',',$_SESSION['role']);
+    $has_role = '';
+    foreach ($role as $r){
       if($r == $requested_role){
         $has_role = true;
       } else { $has_role = false; }
@@ -13,41 +15,40 @@ function user_has_role($requested_role){
   } return $has_role;
 }
 
-	
 function is_admin(){
-	if(isset($_SESSION['username'])){
-		$role = explode(',',$_SESSION['role']);
-		
-		$is_admin = '';
-		foreach ($role as $r){
-			//~ echo '['.$r . ']<br>';
-		if($r =='admin' || $r == 'manager' || $r == 'superadmin'){
-			$is_admin = 'true';
-			//~ echo 'true';
-			}
-		}
-		if ($is_admin == 'true'){
-			return true;
-		} else { return false; }
-	}
+  if(isset($_SESSION['username'])){
+    $role = explode(',',$_SESSION['role']);
+
+    $is_admin = '';
+    foreach ($role as $r){
+      //~ echo '['.$r . ']<br>';
+    if($r =='admin' || $r == 'manager' || $r == 'superadmin'){
+      $is_admin = 'true';
+      //~ echo 'true';
+      }
+    }
+    if ($is_admin == 'true'){
+      return true;
+    } else { return false; }
+  }
 }
 
 
 
 function is_author(){
-	if($_SESSION['username'] === $_SESSION['author']){
-		return true;
-		} else { return false;}
+  if(!empty($_SESSION['username']) && $_SESSION['username'] === $_SESSION['post']['author']){
+    return true;
+    } else { return false;}
 }
 
 
 /*
- * 
+ *
  * name: user_has_permmission_to
- * @param: action name 
- * @param: entity name 
+ * @param: action name
+ * @param: entity name
  * @return: true/false
- * 
+ *
  */
 function user_has_permission_to($action_name,$entity_name,$entity_id){
   $user_id = $_SESSION['user_id'];
@@ -74,19 +75,19 @@ function user_has_permission_to($action_name,$entity_name,$entity_id){
 }
 
 /*
- * 
+ *
  * name: set_permissions
  * @param: array of actions
  * @param: entity name
  * @return: void
- * 
+ *
  */
 function set_permission_actions($entity_name){
   if(isset($_POST['actions']) && isset($_POST['set-permissions'])){
     $actions_csv = trim(parse_text_for_output(sanitize($_POST['actions'])));
     $actions_array = explode(',',$actions_csv);
     //~ print_r($actions_array); die();
-  
+
     foreach($actions_array as $action){
       $action = trim($action);
       $q = db_add_item('core_permissions',$values="{$action},{$entity_name},''");
@@ -101,27 +102,27 @@ function set_permission_actions($entity_name){
     <form action="'.$_SESSION['current_url'].'" method="post" class="w-100">
     <div class="input-group p-3">
       <input type="text" name="actions" placeholder="Seperate actions by comma" class="form-control" />
-    
+
       <div class="input-group-append">
         <input type="submit" name="set-permissions" value="Save permissions" class="btn btn-dark" />
       </div>
-    
+
     </div>
     </form>
   </div>';
-  
+
   show_session_message();
-  
+
   assign_permission_to_roles('room');
 }
 
 function assign_permission_to_roles($addon_name,$action='',$roles_csv=''){
-  
+
   //~ if(is_admin()){
     if(isset($_POST['assign-permissions']) && !empty($_POST['allowed-roles'])){
       $action = trim(sanitize($_POST['action']));
       $allowed_roles = trim(sanitize($_POST['allowed-roles']));
-      
+
       $q = query_db("UPDATE core_permissions SET allowed_roles='{$allowed_roles}' WHERE action='{$action}' AND addon_name='{$addon_name}'",
       "Could not update roles in assign permission to roles! ");
       if($q){
@@ -129,7 +130,7 @@ function assign_permission_to_roles($addon_name,$action='',$roles_csv=''){
         redirect_to($_SESSION['current_url']);
       }
     }
-  
+
     $roles = get_roles();
     $perms = get_permissions($addon_name);
     echo '<span class="text-muted p-3 "><b>Roles: </b>';
@@ -137,14 +138,14 @@ function assign_permission_to_roles($addon_name,$action='',$roles_csv=''){
       echo ''.$role['role'].',';
     }
     echo '</span>';
-    
+
     echo '<br><span class="text-muted p-3"><b>Actions: </b>';
     foreach($perms['result'] as $perm){
       echo ''.$perm['action'].',';
     }
     echo '</span>';
-    
-    
+
+
     foreach($perms['result'] as $perm){
       if(empty($perm['allowed_roles']) || $perm['allowed_roles'] == "''"){
         $perm['allowed_roles'] = '';
@@ -160,8 +161,8 @@ function assign_permission_to_roles($addon_name,$action='',$roles_csv=''){
           echo '<option>'.$perm['action'].'</option>
         </select>
         <input type="text" name="allowed-roles" placeholder="Seperate roles by comma" value="'.parse_text_for_output($perm['allowed_roles']).'" class="form-control text-muted" />
-        
-      
+
+
         <div class="input-group-append">
           <input type="submit" name="assign-permissions" value="Assign permissions" class="btn btn-info" />
         </div>

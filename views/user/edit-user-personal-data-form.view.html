@@ -1,11 +1,19 @@
+<?php
+ //~ set_current_user($_SESSION['username']);
+ if(isset($_SESSION['current_user'])){
+    $user = $_SESSION['current_user'];
+
+    set_user_personal_data($user['id']);
+  }
+$user = $_SESSION['current_user']['personal-data']; ?>
 <div class="p-3">
-  <h3>Add Personal data</h3>
+  <h3>Edit Your Personal Data</h3>
   <form action="<?php echo $_SESSION['current_url']; ?>" method="post">
     <input type="hidden" name="user_id" value="<?php echo $_SESSION['current_user']['id']; ?>" class="form-control" />
     <label for="occupation">Occupation</label>
-    <input type="text" id="occupation" name="occupation" value="" class="form-control mb-2"  placeholder="Occupation" />
-    <label for="interests">Interests</label>
-            <select id='interests' name='interests' class='form-control my-2'>
+    <input type="text" id="occupation" name="occupation" value="<?php echo $user['occupation']; ?>" class="form-control mb-2"  placeholder="Occupation" />
+    <label for="interest">Interest</label>
+            <select id='interest' name='interest' class='form-control my-2'>
               <option>Looking for a room</option>
               <option>Looking for a Date</option>
               <option>Looking for a Place to go</option>
@@ -13,15 +21,14 @@
               <option>Looking for a room mate</option>
               <option>Looking for a Job</option>
               <option>Looking for a Business partner</option>
-            </select>
-    <label for="ethnicity">Ethnicity</label>
-    <input type="text" id="ethnicity" name="ethnicity" value="" class="form-control mb-2" placeholder="Ethnicity"/>
+            </select><label for="ethnicity">Ethnicity</label>
+    <input type="text" id="ethnicity" name="ethnicity" value="<?php echo $user['ethnicity']; ?>" class="form-control mb-2" placeholder="Tribe / Ethnicity"/>
     <label for="religion">Religion</label>
-    <input type="text" id="religion" name="religion" value="" class="form-control mb-2" placeholder="Religion"/>
+    <input type="text" id="religion" name="religion" value="<?php echo $user['religion']; ?>" class="form-control mb-2" placeholder="Religion"/>
     <label for="hobbies">Hobbies</label>
-    <textarea id="hobbies" name="hobbies" cols="50" rows="10" class="form-control mb-2" placeholder="hobbies" ></textarea>
+    <textarea id="hobbies" name="hobbies" cols="50" rows="10" value="<?php echo $user['hobbies']; ?>" class="form-control mb-2" placeholder="hobbies" ></textarea>
     <label for="complexion">Complexion</label>
-    <select id="complexion" name="complexion" class="form-control mb-2">
+    <select id="complexion" name="complexion" class="form-control mb-2" value="<?php echo $user['complexion']; ?>">
       <option>Dark</option>
       <option>Fair</option>
       <option>Black</option>
@@ -41,6 +48,6 @@
       <option>Speech and language Disorders</option>
       <option>Vision Loss and Blindness</option>
     </select>
-     <input type="submit" name="save-user-personal-data" class="btn btn-primary btn-large mt-3" value="Save Personal Data" />
+     <input type="submit" name="save-edit-user-personal-data" class="btn btn-primary btn-large mt-3" value="Save Personal Data" />
   </form>
 </div>

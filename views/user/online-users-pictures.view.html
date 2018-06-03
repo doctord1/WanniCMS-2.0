@@ -1,0 +1,30 @@
+<div class="row p-3 my-3 bg-light">
+  <h4 class="d-block">Online users in past 15 mins</h4>
+<?php
+$online = $_SESSION['temp'];
+$last_seen = array();
+
+
+foreach($online['result'] as $result){
+
+  $name = $result['user_name'];
+  $login_timeago = (( time() - $result['last_login']) / 60 );
+
+  if($login_timeago < 900){
+    $last_seen[]= $name;
+    $person = get_user_pic($name,'rounded-circle p-2', '35px') ;
+    $pics = "<span class=''>" . $person['thumbnail']." &nbsp</span>";
+    $text ='';
+    echo '<span title="'. $name .'">' . $pics .'</span>';
+  }
+}
+echo '</div>';
+
+if(!empty($last_seen)){
+  $_SESSION['recently_logged_in'] = $last_seen;
+}
+?>
+</div>
+
+
+

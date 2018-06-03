@@ -19,10 +19,10 @@ function db_add_item($table,$values){
   }
   $sql = rtrim($sql,',');
   $sql .= ")";
-  //~ echo $sql;
+  echo $sql;
   $q = query_db("{$sql}","Could not add {$clean_name} item! ");
   if($q){
-  session_message('success',"{$table} item added successfully! ");
+  set_session_message('alert-success',"{$table} Item added successfully! ");
   return true;
   }
 }
@@ -64,7 +64,7 @@ function db_get_item($table,$id){
   $q = query_db("SELECT * FROM {$table} WHERE id='{$id}' ",
   "Could not get {$clean_name} details! ");
   if($q){
-    return $q['result'];
+    return $q['result'][0];
   }
 }
 

@@ -1,26 +1,38 @@
 <?php
-
-function home(){
-    load_view('default','home');
-}
-
-
-
 function url_contains($string) {
   //get the current url
-
   $url = URL;
   //check for string in url
-   $lookup = strpos($url, $string);
-
-
-   //If string is found, set the value of found_context
+  $lookup = strpos($url, $string);
   if($lookup > 1 || $lookup !== false) {
     return true;
-  }
+  } else {return false; }
+}
 
-  //If not found, set UNSET the value of found_context
-  else {return false; }
+function no_url_access(){
+  $url = str_ireplace(BASE_PATH,'',$_SESSION['current_url']);
+  $url = str_ireplace('index.php/','',$url);
+  $u_arr = explode('/',$url);
+  if(count($u_arr) ==  1){
+    $url_action = $u_arr[0];
+  } else if(!empty($u_arr[2])){
+    $url_action = $u_arr[2];
+  } else {
+    $url_action = '';
+  }
+  if($_GET['url_function'] == $url_action){
+    set_session_message('alert-warning', 'You are trying to access '.$_SESSION['current_url'].'. <br>
+    You should not be doing that!');
+   redirect_to(BASE_PATH.'deny-access');
+  }
+}
+
+function context_is($context){
+  if(isset($_GET['context']) && $_GET['context'] == $context){
+    return true;
+  } else {
+    return false;
+  }
 }
 
 function get_request_contains($request_url,$search_string) {
@@ -42,7 +54,7 @@ function get_request_contains($request_url,$search_string) {
   //If not found, set UNSET the value of found_context
   else {
     //~ echo 'is_not component request';
-    return false; 
+    return false;
     }
 }
 
@@ -59,7 +71,7 @@ function is_json_request(){
   if(empty($url)){
     $url = URL;
   }
-  if(get_request_contains($url,'/json.php/')){
+  if(get_request_contains($url,BASE_PATH.'json/')){
     return true;
   } else {
     return false;
@@ -67,133 +79,27 @@ function is_json_request(){
 }
 
 
-function get_json_data($url=''){
-  #Queris the db and returns json data
-  //~ if(is_json_request($url)){
-    if(empty($url)){
-      $url = URL;
-    }
-    $url = str_ireplace(BASE_PATH,'',$url);
-    $url = str_ireplace('json.php/','',$url);
-    $url = str_ireplace('index.php/','',$url);
-    $url = str_ireplace('get-data/','',$url);
-    //~ echo 'New url ='.$url;
-    $url_params = explode('/',$url);
-    $parameter_count = 0;
-    foreach($url_params as $key => $value){
-      if(!empty($value)){
-        $parameter_count++;
-      }
-    }
-    
-    //~ print_r($url_params);
-    
-    //~ echo 'this is a db call so fetch from db';
-      //~ BASE_PATH/json.php/table/column/specifier/parameter/pager-start/pager-stop
-      //~ eg 3
-      //~ BASE_PATH/json.php/contest/id/equals/21 
-      //~ BASE_PATH/json.php/user/condition/site_funds_amount+>'50' 
-    
-    $_GET['get-data']['table'] = $url_params[0];
-    $_GET['get-data']['column'] = $url_params[1];
-    $_GET['get-data']['specifier'] = $url_params[2];
-    $_GET['get-data']['parameter'] = $url_params[3];
-    $_GET['get-data']['pager-start'] = $url_params[4];
-    $_GET['get-data']['pager-end'] = $url_params[5];
-    //~ print_r($_GET['get-data']);
-    $table = $_GET['get-data']['table'];
-    $column = $_GET['get-data']['column'];
-    $parameter = $_GET['get-data']['parameter'];
-    $pager_start = $_GET['get-data']['pager-start'];
-    $pager_end = $_GET['get-data']['pager-end'];
-    if($_GET['get-data']['specifier'] == 'equals'){
-      $condition = "{$column} = '{$parameter}'";
-    } else if($_GET['get-data']['specifier'] == 'contains'){
-      $condition = "{$column} LIKE '%{$parameter}%'";
-    }
-    
-    if(!empty($pager_start)){
-      if(!empty($pager_stop)){
-        $limit = "LIMIT {$pager_start}, {$pager_stop}";
-      } else {
-        $limit = "LIMIT {$pager_start}, 25";
-      }
-      
-    } else {
-      $limit = '';
-    }
-    
-    if(!empty($_GET['get-data']['table'])){
-      if($_GET['get-data']['column'] == 'all'){
-        $q = query_db("SELECT * FROM {$table} {$limit}",
-        "Could not get all datafrom {$table}! ");
-      } else if($_GET['get-data']['column'] == 'condition'){
-        $condition = str_ireplace('+',' ',$_GET['get-data']['specifier']);
-        $condition = str_ireplace(' greater than ','>',$condition);
-        $condition = str_ireplace(' less than ','<',$condition);
-        $condition = sanitize($condition);
-        $sql = "SELECT {$condition} {$limit}";
-        $sql = trim($sql);
-        $q = query_db("$sql",
-        "Could not get condition  data from {$table}! ");
-      } else {
-        $sql = "SELECT * FROM {$table} WHERE {$condition} {$limit}";
-        $q = query_db("{$sql}",
-        "Could not get {$column} value from {$table}! ");
-      }
-      if($q){
-        foreach($q as $key => $value){
-          if(is_numeric($key)){ 
-            unset($q[$key]);
-          }
-        }
-        foreach($q['result'] as $key => $value){ 
-            if(is_numeric($key)){
-              //~ echo $key;
-              unset($q['result'][0][$key]);
-            }
-            if(
-            $key == 'password' || 
-            $key == 'secret_question' || 
-            $key == 'secret_answer' || 
-            $key == 'bank_account_no' || 
-            $key == 'bank_name' || 
-            $key == 'ip_address'
-            ){
-             unset($q['result'][0][$key]);
-            }
-          }
-        $obj = json_encode($q);
-        //~ header('Content-Type: application/json');
-        return $obj;
-        //~ exit;
-      }  
-    }
-  //~ } else {
-    //~ echo 'Not a valid json request!';
-  //~ }
-}
+
 
 function get_url_content($url=''){
-  //~ Format is: BASE_PATH/addon/action/action-value/parameter/parameter-value
+  //~ Format is: BASE_PATH/context(addon)/action/action-value/parameter/parameter-value
 
     get_clean_url($url);
-    show_route_content();
-    
     enable_url_aliases();
-  
+    show_route_content();
+
   //~ echo $_GET['fetched-url'];
-  //~ echo '<br>';
   //~ print_r($_GET['clean-url']);
-  //~ print_r($_SESSION);
+
 }
+
 
 
 function enable_url_aliases(){
   //~ Url ALiases
   if(isset($_GET['clean-url']['short-call'])){
     $path = $_GET['clean-url']['short-call'];
-  
+
     if($path == 'me'){
       $_GET['clean-url']['short-call'] = 'show-user-profile';
       if(is_logged_in()){
@@ -203,38 +109,59 @@ function enable_url_aliases(){
     if($path == 'login'){
       $_GET['clean-url']['short-call'] = 'show-login-form';
     }
+
+  }
+  if(url_contains(BASE_PATH.'tags/')){
+    $tag = urldecode(str_ireplace(BASE_PATH.'tags/','',URL));
+    get_clean_url(BASE_PATH.'category/action/show-posts-tagged-with/'.$tag);
+  }
+  if(url_contains(BASE_PATH.'p/')){
+    $post = urldecode(str_ireplace(BASE_PATH.'p/','',URL));
+    get_clean_url(BASE_PATH.'post/action/show-post/'.$post);
+
+  }
+  if(url_contains(BASE_PATH.'profile/')){
+    $user = str_ireplace(BASE_PATH.'profile/','',URL);
+    get_clean_url(BASE_PATH.'user/action/show-user-profile/'.$user);
   }
 }
 
 function get_clean_url($url=''){
   if(empty($url)){
     $url = URL;
-  } 
+  }
+
+  if(url_contains('/index.php/')){
+    $url = str_ireplace('/index.php/','/',URL);
+    redirect_to($url);
+  }
 
   $_GET['fetched-url'] = $url;
   $url = str_ireplace(BASE_PATH,'',$url);
-  $url = str_ireplace('addons/','',$url);
   $url = str_ireplace('index.php/','',$url);
   $url_params = explode('/',$url);
   $_GET['clean-url'] = array();
-  
-  if(count($url_params) == 1){
+  $count = count($url_params);
+  if($count == 1){
     $_GET['clean-url']['short-call'] = array_shift($url_params);
     //~ short-call functions must have no parameter
+     $_GET['clean-url']['function'] =  $_GET['clean-url']['short-call'];
     enable_url_aliases();
+  } else if(url_contains('/p/')){
+    $_GET['url_function'] = 'show-post';
+  } else if($count >= 2){
+    $_GET['url_function'] = $url_params[2];
   }
-  
   $state_holder = 0;
   $key_name = '';
-  
+
   $_GET['clean-url']['current_path'] = URL;
   $_GET['clean-url']['addon'] = array_shift($url_params);
+  $_GET['context'] = $_GET['clean-url']['addon'];
   $action = array_shift($url_params);
   $_GET['clean-url'][$action] = array_shift($url_params);
   $_GET['clean-url']['params'] = $url_params;
-  
-  
-  //~ print_r($url_params);
+
   foreach($url_params as $value){
     if($state_holder == 0 && !empty($value)){
       $key_name =  array_shift($url_params);
@@ -254,8 +181,7 @@ function show_route_content($url=''){
     $url = URL;
   }
   if($_SESSION['current_url'] == BASE_PATH || $_SESSION['current_url'] == trim(BASE_PATH,'/')){
-    
-    redirect_to(BASE_PATH.'index.php/home');
+    redirect_to(BASE_PATH.'home');
   }
   if(isset($_GET['clean-url']['addon'])){
     $route = $_GET['clean-url']['addon'];
@@ -271,10 +197,11 @@ function show_route_content($url=''){
         $incrementor++;
       }
     }
-    
-    //~ echo '<br> Func name is : ' . $func_name.'('.$_GET['clean-url']['params'].')';
+
+    //~ echo '<br> Func name is : ' .$_GET['url_function'] .'('.$_GET['clean-url']['params'].')';
         if(function_exists($func_name)){
-          call_user_func_array($func_name,$_GET['clean-url']['params']);
+          $_GET['url_function'] = str_ireplace('-','_',$_GET['url_function']);
+          call_user_func_array($_GET['url_function'],$_GET['clean-url']['params']);
         }
     } else if(isset($_GET['clean-url']['short-call'])){
       $func_name = str_ireplace('-','_',$_GET['clean-url']['short-call']);
@@ -284,10 +211,6 @@ function show_route_content($url=''){
   }
     //~ print_r($_GET['clean-url']);
     //~ $_GET['clean-url'] = $holder;
-  } 
-  
-
-
-  
+  }
 
 ?>

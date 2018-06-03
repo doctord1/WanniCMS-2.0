@@ -1,7 +1,6 @@
 <?php
-require_once('enable_disable_addon.php');
 //~ Select draw winners
-if(addon_is_active('draws')){
+if(addon_is_available('draws')){
   $time = getdate();
   if($time['hours'] >'20' && $time['hours'] < '24'){
   $active_draws = get_active_draws();

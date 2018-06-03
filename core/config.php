@@ -1,9 +1,12 @@
 <?php
 require_once ('core.php');
+//~ $user = "staywith_admin";
 $user = "root";
 $server = "localhost";
+//~ $pass = "A+fBk_XAZjy5";
 $pass = "";
-$db = "roomshare";
+//~ $db = "staywith_me";
+$db = "staywithme";
 
 
 //1. Create a database connection
@@ -39,7 +42,7 @@ $app_name = 'StayWithMe';
 define('APPLICATION_NAME', $app_name);
 // APPLICATION_NAME is now available as a constant in any page
 
-define('PROTOCOL', 'https://');
+define('PROTOCOL', 'http://');
 // APPLICATION_NAME is now available as a constant in any page
 
 
@@ -59,13 +62,22 @@ define('SITE_VERSION', $site_version);
 
 
 # SETS BASE PATH
-$base_path = PROTOCOL.'localhost/roomshare/';
+//~ $base_path = PROTOCOL.'staywithme.com.ng/';
+$base_path = PROTOCOL.'localhost/staywithme/';
 define('BASE_PATH', $base_path);
 // BASE_PATH is now available as a constant in any page
 
-if($_SESSION['current_url'] == PROTOCOL.'staywithme.com.ng' 
-|| $_SESSION['current_url'] == $base_path){
-  header($_SESSION['current_url'].'/index.php');
-}
+# SETS DIR PATH
+$dir_path = dirname(dirname(__FILE__));
+$dir_path .= '/';
+define('DIR_PATH', $dir_path);
+// DIR_PATH is now available as a constant in any page
+
+//~ if(isset($_SESSION)){
+    //~ if($_SESSION['current_url'] == PROTOCOL.'staywithme.com.ng'
+    //~ || $_SESSION['current_url'] == $base_path){
+     //~ header($_SESSION['current_url'].'/home');
+    //~ }
+//~ }
 
 ?>

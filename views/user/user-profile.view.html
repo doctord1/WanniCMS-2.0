@@ -1,45 +1,106 @@
-<?php 
-  if(isset($_SESSION['current_user'])){
-    $user = $_SESSION['current_user'];
-    set_user_personal_data($user['id']);
-    //~ print_r($_SESSION['current_user']);
-  } 
+<?php
+  $current_user = user_being_viewed();
+  $user = get_user_by_username($current_user);
+  $_SESSION['current_user'] = $user;
+  //~ print_r($user); echo $current_user;
+  set_user_personal_data($user['id']);
 ?>
-<div class="row">
-  <div class="col-md-12 text-muted col-xs-12 px-3 pt-2">
-    <?php show_user_edit_link(); ?> | <?php show_user_delete_link(); ?>
-  </div>
-  
-  <div class="col-md-5 col-xs-12 text-center p-3">
-    <?php  show_user_pic($user['user_name'],'img-fluid'); ?>
-  </div>
-  <div class="col-md-5 col-xs-12 text-center p-3">
-    <div class="row">
-      <div class="col-md-12 col-xs-12 text-center p-3">
-        
+<div class="row" >
+    <div class="col-md-6 col-xs-12 text-centered p-0" style="border-radius: 0px">
+      <?php
+        show_user_pic($user['user_name'],'mb-2 img-fluid one-edge-shadow',500);
+
+      // LAST sEEN
+      $last_seen = round(((time() - $user['last_login']) / 60 ),0);
+      if($last_seen < 1 ){
+        $last_seen_displayed = 'Online';
+        $suffix = " !";
+      }else if($last_seen > 1 && $last_seen < 59 ){
+        $last_seen_displayed = $last_seen;
+        $suffix = " mins ago!";
+      }else if($last_seen > 59 && $last_seen < 1439){
+        $suffix = " hours ago!";
+        $last_seen_displayed = round((($last_seen / 60)),0);
+      }else if($last_seen > 1439 && $last_seen < 43169){
+        $suffix = " days ago!";
+        $last_seen_displayed = round((($last_seen / 24) / 60),0);
+      }else if($last_seen >= 43169){
+        $suffix = " months ago!";
+        $last_seen_displayed = round(((($last_seen / 30) / 24) / 60),0);
+      }
+
+      if($last_seen > (1439 * 2)){
+        if(is_admin()){
+          echo '<center class="my-2 bg-light px-4 col-md-12 col-sm-12">Last seen <span class="text-success">'. $last_seen_displayed . $suffix .'</span></center>';
+        }
+      } else {
+        echo '<center class="my-2 bg-light px-4 col-md-12 col-sm-12">Last seen <span class="text-success">'. $last_seen_displayed . $suffix .'</span></center>';
+      }
+
+        if(is_logged_in()){
+          echo '<div class="col-md-12 text-muted col-xs-12 px-4 m-0">';
+            show_user_edit_link($user['user_name']); ?> | <?php show_user_delete_link($user['user_name']);
+          echo '</div>';
+
+          echo '<div class="p-3" style="border-radius: 0px">';
+          send_message_link($user['user_name']);
+          echo '</div>';
+
+          echo ' <div class="col-md-6 col-xs-12 px-4 my-2">';
+          switch_user();
+          echo '</div>';
+        }
+
+
+
+        if(is_my_profile_page()){
+          echo '<div class="col-md-12 text-muted col-xs-12 p-3 my-2">';
+          echo '<a class=" bg-light p-3 d-inline-block  mx-2" href="'. BASE_PATH.'show-my-last-booking'.'">My last booking</a>';
+          echo '<a class=" bg-light p-3 d-inline-block mx-2" href="'. BASE_PATH.'show-requests-to-staywithme'.'">Requests to stay with me</a>';
+          echo '</div>';
+        }
+    ?>
+
+
+    </div>
+
+
+
+    <div class="col-md-6 col-xs-12 text-center p-3">
+      <div class="col-md-12 col-xs-12 text-centered p-3">
+
         <b>Personal Data</b>
-        <?php 
+        <?php
           if(!empty($_SESSION['current_user']['personal-data']) ){
             show_user_personal_data();
+            if(is_logged_in()){
+              echo '<a class="d-block" href="'.BASE_PATH.'edit-user-personal-data">Edit your personal data</a>';
+            }
+          } else if(is_my_profile_page()){
+            echo '<a class="d-block" href="'.BASE_PATH.'user/action/add-user-personal-data/'.$user['user_name'].'">Fill your personal data</a>';
           } else {
-            add_user_personal_data($user['user_name']);
-          } 
+            echo '<i class="d-block text-centered">- No personal data yet -</i>';
+          }
         ?>
       </div>
-      <div class="col-md-12 col-xs-12 text-center p-3">
-        <b>User ratings</b>
-        <?php // show_user_pic($user['user_name']); ?>
+      <?php
+      if(is_logged_in()){
+        echo '<div class="col-md-12 col-xs-12 text-center p-3">
+          <b>User ratings</b>
+        </div>';
+      }
+
+      echo '<div class="col-md-12 col-xs-12 text-center p-3">';
+
+        if(addon_is_available('room') && is_my_profile_page()){ show_my_rooms(); } ?>
       </div>
-    
-      <div class="col-md-12 col-xs-12 text-center p-3">
-        <?php if(addon_is_available('room')){ show_my_rooms(); } ?>
-      </div>
-      
+
+
     </div>
-  </div>
+
 </div>
-  
-    
+
+
 
 <!--
       //~ if(addon_is_active('messaging')){
@@ -53,5 +114,5 @@
         //~ }
       //~ }
 -->
-      
-   
+
+

@@ -1,0 +1,28 @@
+<div class="col-md-12 col-xs-12">
+<?php
+if(isset($_SESSION['current_user']['personal-data'])){
+  $pdata = $_SESSION['current_user']['personal-data'];
+  if(empty($pdata['current_location'])){
+    $location = $_SESSION['current_user']['location_by_ip'];
+    $loc = explode(',',$location);
+    if(!empty($loc[0])){
+      $pdata['current_location']  = $loc[0];
+    }
+    if(!empty($loc[1])){
+      $pdata['current_location']  .= ', '.$loc[1];
+    }
+  }
+
+  $user_year = $_SESSION['current_user']['year_of_birth'];
+  $date = getdate();
+  $present_yr = $date['year'];
+  $user_age = $present_yr - $user_year;
+
+  echo '<div class="bg-white border p-2 m-2">'. $_SESSION['current_user']['user_name'] .' is a '.$user_age.' year old '. $_SESSION['current_user']['gender'] .' currently staying in '.$pdata['current_location'];
+
+  echo '<br> ';
+  echo '<b>Occupation : </b> '.$pdata['occupation'];
+  echo '</div>';
+}
+?>
+</div>
